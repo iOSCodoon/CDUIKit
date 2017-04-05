@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 codoon. All rights reserved.
 //
 
+@import UIKit;
+
 #import "CDTabBarOverlay.h"
 #import "CDTabBar.h"
 #import "CDTabBarItem.h"

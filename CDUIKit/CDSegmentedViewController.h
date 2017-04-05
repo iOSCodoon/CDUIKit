@@ -6,9 +6,9 @@
 //  Copyright © 2016 Codoon. All rights reserved.
 //
 
-#import "CDViewController.h"
+@import UIKit;
 
-@interface CDSegmentedViewController : CDViewController
+@interface CDSegmentedViewController : UIViewController
 
 @property (readonly) NSInteger selectedIndex;
 

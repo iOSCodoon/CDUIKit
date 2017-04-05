@@ -7,7 +7,6 @@
 //
 
 #import "CDSegmentedViewController.h"
-#import "CDStatisticManager.h"
 
 static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegmentedViewControllerKey";
 
@@ -192,12 +191,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (UIViewController *)viewControllerAtIndex:(NSInteger)index willAppearAnimated:(BOOL)animated {
-    
-    if(self.lastSelectedPageAddress){
-        //统计页面转化率相关代码
-        [[CDStatisticManager sharedInstance] removePageWithPageAdress:self.lastSelectedPageAddress];
-    }
-    
     UIViewController *viewController = [_viewControllers objectAtIndex:index];
     if(!_statuses[index].boolValue) {
         viewController.view.frame = CGRectMake(_scrollView.width*index, 0, _scrollView.width, _scrollView.height);
