@@ -10,6 +10,8 @@
 #import "CDTabBarItem.h"
 #import "CDTabBarBadge.h"
 
+#import "CDTabBarControllerAppearance.h"
+
 #define kDefaultImageHeight         34
 #define kDefaultTitleHeight         10
 #define kDefaultTitleOffset         CGPointMake(0.f, 0.f)
@@ -98,7 +100,7 @@
                 case CDTabBarBadgeTypeDot:
                 {
                     UIView *view = [[UIView alloc] init];
-                    view.backgroundColor = COLOR_WITH_HEX(0xf1585b, 1);
+                    view.backgroundColor = [CDTabBarControllerAppearance sharedInstance].badgeColor;
                     view.frame = CGRectMake(0, 0, 10, 10);
                     self.badgeView = view;
                     break;
@@ -106,7 +108,7 @@
                 case CDTabBarBadgeTypeString:
                 {
                     UILabel *label = [[UILabel alloc] init];
-                    label.backgroundColor = COLOR_WITH_HEX(0xf1585b, 1);
+                    label.backgroundColor = [CDTabBarControllerAppearance sharedInstance].badgeColor;
                     label.text = self.item.badge.value;
                     label.font = [UIFont systemFontOfSize:9];
                     label.textAlignment = NSTextAlignmentCenter;

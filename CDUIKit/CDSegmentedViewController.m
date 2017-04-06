@@ -8,6 +8,8 @@
 
 #import "CDSegmentedViewController.h"
 
+#include <objc/runtime.h>
+
 static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegmentedViewControllerKey";
 
 @interface CDSegmentedViewController () <UIScrollViewDelegate>
@@ -137,7 +139,8 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         _segmentedView.frame = CGRectMake(0, 0, self.view.width, 38);
         _segmentedView.hidden = NO;
 
-        _splitterLayer.frame = CGRectMake(0, _segmentedView.height - kLineWidth, _segmentedView.width, kLineWidth);
+        CGFloat lineWidth = 1.0/[UIScreen mainScreen].scale;
+        _splitterLayer.frame = CGRectMake(0, _segmentedView.height - lineWidth, _segmentedView.width, lineWidth);
 
         CGFloat segmentedWidth = _segmentedView.width/_buttons.count;
 

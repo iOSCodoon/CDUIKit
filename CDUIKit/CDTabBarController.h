@@ -12,6 +12,8 @@
 #import "CDTabBar.h"
 #import "CDTabBarItem.h"
 
+#import "CDTabBarControllerAppearance.h"
+
 @class CDTabBarController;
 
 @interface CDTabBarController : UITabBarController
@@ -22,5 +24,7 @@
 @property (readonly, nonatomic) BOOL programmaticIndexChange;
 
 - (void)commitItemChanges;
+
++ (CDTabBarControllerAppearance *)appearance;
 
 @end

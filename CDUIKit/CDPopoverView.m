@@ -48,7 +48,7 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
             case CDPopoverViewBackgroundStyleDimmed: {
                 _backgroundView = [[UIView alloc] init];
                 _backgroundView.frame = self.bounds;
-                _backgroundView.backgroundColor = COLOR_WITH_HEX(0x00, 0.5);
+                _backgroundView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
                 _backgroundView.alpha = 0;
                 [self addSubview:_backgroundView];
                 break;
