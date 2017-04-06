@@ -9,9 +9,6 @@
 #ifndef CDUIKit_h
 #define CDUIKit_h
 
-@import Foundation;
-@import UIKit;
-
 #import "CDPopoverView.h"
 #import "CDAlignmentButton.h"
 #import "CDSegmentedViewController.h"
