@@ -23,8 +23,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 @property (readwrite, nonatomic, assign) NSInteger nextIndex;
 
 @property (readwrite, nonatomic, strong) NSMutableArray <NSNumber *> *statuses;
-
-@property(nonatomic, copy) NSString *lastSelectedPageAddress;
 @end
 
 @implementation CDSegmentedViewController
@@ -36,7 +34,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     [super viewDidLoad];
 
     _segmentedView = [[UIView alloc] init];
-    _segmentedView.backgroundColor = COLOR_WITH_HEX(0xffffff, 1);
+    _segmentedView.backgroundColor = [self preferredSegmentedBackgroundColor];
     [self.view addSubview:_segmentedView];
 
     _indicatorView = [[UIView alloc] init];
@@ -132,7 +130,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (void)layoutContents {
-    // 只有1个segment时不显示segment control
     if(_buttons.count <= 1) {
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
@@ -204,8 +201,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
     [self addChildViewController:viewController];
     [viewController didMoveToParentViewController:self];
-
-    self.lastSelectedPageAddress = [NSString stringWithFormat:@"%p",viewController];
 
     return viewController;
 }
@@ -294,11 +289,11 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.backgroundColor = [UIColor clearColor];
     button.adjustsImageWhenHighlighted = NO;
-    button.titleLabel.font = [UIFont systemFontOfSize:14];
+    button.titleLabel.font = [self preferredSegmentedTitleFont];
     [button setTitle:[_titles objectAtIndex:index] forState:UIControlStateNormal];
-    [button setTitleColor:COLOR_WITH_HEX(0x7c7c83, 1) forState:UIControlStateNormal];
-    [button setTitleColor:COLOR_WITH_HEX(0x2dcc70, 1) forState:UIControlStateHighlighted|UIControlStateSelected];
-    [button setTitleColor:COLOR_WITH_HEX(0x2dcc70, 1) forState:UIControlStateSelected];
+    [button setTitleColor:[self preferredSegmentedTitleColor] forState:UIControlStateNormal];
+    [button setTitleColor:[self preferredSegmentedTitleHighlightedColor] forState:UIControlStateHighlighted|UIControlStateSelected];
+    [button setTitleColor:[self preferredSegmentedTitleHighlightedColor] forState:UIControlStateSelected];
 
     return button;
 }
@@ -316,16 +311,32 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return nil;
 }
 
+- (UIColor *)preferredSegmentedBackgroundColor {
+    return [CDSegmentedViewControllerAppearance sharedInstance].segmentedBackgroundColor;
+}
+
+- (UIColor *)preferredSegmentedTitleColor {
+    return [CDSegmentedViewControllerAppearance sharedInstance].segmentedTitleColor;
+}
+
+- (UIColor *)preferredSegmentedTitleHighlightedColor {
+    return [CDSegmentedViewControllerAppearance sharedInstance].segmentedTitleHighlightedColor;
+}
+
+- (UIFont *)preferredSegmentedTitleFont {
+    return [CDSegmentedViewControllerAppearance sharedInstance].segmentedTitleFont;
+}
+
 - (BOOL)prefersIndicatorHidden {
     return NO;
 }
 
 - (UIColor *)preferredIndicatorColor {
-    return COLOR_WITH_HEX(0x2aba66, 1);
+    return [CDSegmentedViewControllerAppearance sharedInstance].indicatorColor;
 }
 
 - (CGFloat)preferredSegmentedIndicatorWidth {
-    return 70;
+    return [CDSegmentedViewControllerAppearance sharedInstance].indicatorWidth;
 }
 
 - (BOOL)prefersSplitterHidden {
@@ -333,7 +344,11 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (UIColor *)preferredSplitterColor {
-    return COLOR_WITH_HEX(0xf0f0f7, 1);
+    return [CDSegmentedViewControllerAppearance sharedInstance].splitterColor;
+}
+
++ (CDSegmentedViewControllerAppearance *)appearance {
+    return [CDSegmentedViewControllerAppearance sharedInstance];
 }
 
 @end

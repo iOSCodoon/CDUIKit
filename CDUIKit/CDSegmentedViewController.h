@@ -6,7 +6,9 @@
 //  Copyright © 2016 Codoon. All rights reserved.
 //
 
-@import UIKit;
+#import <UIKit/UIKit.h>
+
+#import "CDSegmentedViewControllerAppearance.h"
 
 @interface CDSegmentedViewController : UIViewController
 
@@ -32,6 +34,11 @@
 
 - (CGFloat)preferredSegmentedIndicatorWidth;
 
+- (UIColor *)preferredSegmentedBackgroundColor;
+- (UIColor *)preferredSegmentedTitleColor;
+- (UIColor *)preferredSegmentedTitleHighlightedColor;
+- (UIFont *)preferredSegmentedTitleFont;
+
 - (BOOL)prefersIndicatorHidden;
 - (UIColor *)preferredIndicatorColor;
 
@@ -39,6 +46,8 @@
 - (UIColor *)preferredSplitterColor;
 
 - (void)reloadContents;
+
++ (CDSegmentedViewControllerAppearance *)appearance;
 
 @end
 

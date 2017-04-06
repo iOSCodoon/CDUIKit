@@ -7,6 +7,7 @@
 //
 
 #import "CDPopoverView.h"
+
 #import <objc/runtime.h>
 
 static UIViewAnimationOptions curve = (7 << 16);
@@ -54,14 +55,8 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
             }
 
             case CDPopoverViewBackgroundStyleBlurLight: {
-                if(NSClassFromString(@"UIVisualEffectView") != nil) {
-                    _backgroundView = [[UIVisualEffectView alloc] init];
-                    ((UIVisualEffectView *)_backgroundView).effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-                } else {
-                    _backgroundView = [[UIToolbar alloc] init];
-                    ((UIToolbar *)_backgroundView).barStyle = UIBarStyleDefault;
-                }
-
+                _backgroundView = [[UIVisualEffectView alloc] init];
+                ((UIVisualEffectView *)_backgroundView).effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
                 _backgroundView.alpha = 0;
                 _backgroundView.frame = self.bounds;
                 [self addSubview:_backgroundView];
@@ -70,14 +65,8 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
             }
 
             case CDPopoverViewBackgroundStyleBlurDark: {
-                if(NSClassFromString(@"UIVisualEffectView") != nil) {
-                    _backgroundView = [[UIVisualEffectView alloc] init];
-                    ((UIVisualEffectView *)_backgroundView).effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-                } else {
-                    _backgroundView = [[UIToolbar alloc] init];
-                    ((UIToolbar *)_backgroundView).barStyle = UIBarStyleBlack;
-                }
-
+                _backgroundView = [[UIVisualEffectView alloc] init];
+                ((UIVisualEffectView *)_backgroundView).effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
                 _backgroundView.alpha = 0;
                 _backgroundView.frame = self.bounds;
                 [self addSubview:_backgroundView];
