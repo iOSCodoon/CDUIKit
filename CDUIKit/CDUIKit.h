@@ -12,4 +12,8 @@
 @import Foundation;
 @import UIKit;
 
+#import "CDPopoverView.h"
+#import "CDAlignmentButton.h"
+#import "CDSegmentedViewController.h"
+
 #endif /* CDFoundation_h */
