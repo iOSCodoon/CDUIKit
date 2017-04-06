@@ -6,8 +6,8 @@
 //  Copyright © 2016 Codoon. All rights reserved.
 //
 
-#ifndef CDFoundation_h
-#define CDFoundation_h
+#ifndef CDUIKit_h
+#define CDUIKit_h
 
 @import Foundation;
 @import UIKit;
@@ -16,4 +16,4 @@
 #import "CDAlignmentButton.h"
 #import "CDSegmentedViewController.h"
 
-#endif /* CDFoundation_h */
+#endif /* CDUIKit_h */
