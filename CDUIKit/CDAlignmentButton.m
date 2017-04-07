@@ -19,20 +19,22 @@
     CGFloat imageWidth = CGRectGetWidth(self.imageView.bounds);
     CGFloat imageHeight = CGRectGetHeight(self.imageView.bounds);
 
+    CGFloat totalHeight = (imageHeight + titleHeight + _spacing);
+
     switch(_style) {
         case CDAlignmentButtonStyleImageTop: {
-            self.titleEdgeInsets = (UIEdgeInsets) {
-                .top = (imageHeight + _spacing)/2,
-                .left = -imageWidth/2,
-                .bottom = -(imageHeight + _spacing)/2,
-                .right = imageWidth/2
+            self.imageEdgeInsets = (UIEdgeInsets) {
+                .top    = -(totalHeight - imageHeight),
+                .left   = 0,
+                .bottom = 0,
+                .right  = -titleWidth
             };
 
-            self.imageEdgeInsets = (UIEdgeInsets) {
-                .top = -(titleHeight + _spacing)/2,
-                .left = titleWidth/2,
-                .bottom = (titleHeight + _spacing)/2,
-                .right = -titleWidth/2
+            self.titleEdgeInsets  = (UIEdgeInsets) {
+                .top    = 0,
+                .left   = -imageWidth,
+                .bottom = -(totalHeight - titleHeight),
+                .right  = 0
             };
 
             break;
