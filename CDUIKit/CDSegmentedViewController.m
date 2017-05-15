@@ -13,7 +13,7 @@
 static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegmentedViewControllerKey";
 
 @interface CDSegmentedViewController () <UIScrollViewDelegate>
-@property (readwrite, nonatomic, strong) UIView *segmentedView;
+@property (readwrite, nonatomic, strong) UIScrollView *segmentedView;
 @property (readwrite, nonatomic, strong) UIView *indicatorView;
 @property (readwrite, nonatomic, strong) CALayer *splitterLayer;
 @property (readwrite, nonatomic, strong) UIScrollView *scrollView;
@@ -35,7 +35,9 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    _segmentedView = [[UIView alloc] init];
+    _segmentedView = [[UIScrollView alloc] init];
+    _segmentedView.showsHorizontalScrollIndicator = NO;
+    _segmentedView.showsVerticalScrollIndicator = NO;
     _segmentedView.backgroundColor = [self preferredSegmentedBackgroundColor];
     [self.view addSubview:_segmentedView];
 
@@ -132,6 +134,18 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (void)layoutContents {
+    [self layoutSegments];
+
+    _scrollView.frame = CGRectMake(0, _segmentedView.bottom, self.view.width, self.view.height - _segmentedView.bottom);
+
+    _scrollView.contentSize = CGSizeMake(self.view.width*_viewControllers.count, _scrollView.contentSize.height);
+
+    for(NSInteger index = 0; index < _viewControllers.count; index++) {
+        _viewControllers[index].view.frame = CGRectMake(index*_scrollView.width, 0, _scrollView.width, _scrollView.height);
+    }
+}
+
+- (void)layoutSegments {
     if(_buttons.count <= 1) {
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
@@ -142,22 +156,29 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         CGFloat lineWidth = 1.0/[UIScreen mainScreen].scale;
         _splitterLayer.frame = CGRectMake(0, _segmentedView.height - lineWidth, _segmentedView.width, lineWidth);
 
-        CGFloat segmentedWidth = _segmentedView.width/_buttons.count;
+        if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
+            CGFloat segmentedWidth = _segmentedView.width/_buttons.count;
+            for(NSInteger index = 0; index < _buttons.count; index++) {
+                UIButton *button = _buttons[index];
+                [button sizeToFit];
 
-        for(NSInteger index = 0; index < _buttons.count; index++) {
-            _buttons[index].frame = CGRectMake(index*segmentedWidth, 0, segmentedWidth, _segmentedView.height);
+                button.frame = CGRectMake(index*segmentedWidth + (segmentedWidth - button.width)/2, 0, button.width, _segmentedView.height);
+            }
+        } else {
+            CGFloat offset = 5;
+            for(NSInteger index = 0; index < _buttons.count; index++) {
+                UIButton *button = _buttons[index];
+                [button sizeToFit];
+
+                button.frame = CGRectMake(offset, 0, button.width, _segmentedView.height);
+                offset += button.width;
+            }
+            offset += 5;
+            _segmentedView.contentSize = CGSizeMake(offset, _segmentedView.height);
         }
 
-        CGFloat segmentedIndicatorWidth = [self preferredSegmentedIndicatorWidth];
-        _indicatorView.frame = CGRectMake(segmentedWidth*_selectedIndex + (segmentedWidth - segmentedIndicatorWidth)/2, _segmentedView.height - 2, segmentedIndicatorWidth, 2);
-    }
-
-    _scrollView.frame = CGRectMake(0, _segmentedView.bottom, self.view.width, self.view.height - _segmentedView.bottom);
-
-    _scrollView.contentSize = CGSizeMake(self.view.width*_viewControllers.count, _scrollView.contentSize.height);
-
-    for(NSInteger index = 0; index < _viewControllers.count; index++) {
-        _viewControllers[index].view.frame = CGRectMake(index*_scrollView.width, 0, _scrollView.width, _scrollView.height);
+        UIButton *selectedButton = _buttons[_selectedIndex];
+        _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - 2, selectedButton.width - 34, 2);
     }
 }
 
@@ -273,8 +294,13 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         }];
 
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|(7 << 16) animations:^{
-            _indicatorView.centerX = _buttons[currentIndex].centerX;
+            UIButton *button = _buttons[currentIndex];
+            _indicatorView.width = button.width - 34;
+            _indicatorView.centerX = button.centerX;
         } completion:nil];
+
+        UIButton *selectedButton = _buttons[_selectedIndex];
+        [_segmentedView scrollRectToVisible:selectedButton.frame animated:YES];
     }
 }
 
@@ -293,6 +319,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     button.backgroundColor = [UIColor clearColor];
     button.adjustsImageWhenHighlighted = NO;
     button.titleLabel.font = [self preferredSegmentedTitleFont];
+    button.contentEdgeInsets = UIEdgeInsetsMake(0, 17, 0, 17);
     [button setTitle:[_titles objectAtIndex:index] forState:UIControlStateNormal];
     [button setTitleColor:[self preferredSegmentedTitleColor] forState:UIControlStateNormal];
     [button setTitleColor:[self preferredSegmentedTitleHighlightedColor] forState:UIControlStateHighlighted|UIControlStateSelected];
@@ -338,16 +365,16 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return [CDSegmentedViewControllerAppearance sharedInstance].indicatorColor;
 }
 
-- (CGFloat)preferredSegmentedIndicatorWidth {
-    return [CDSegmentedViewControllerAppearance sharedInstance].indicatorWidth;
-}
-
 - (BOOL)prefersSplitterHidden {
     return YES;
 }
 
 - (UIColor *)preferredSplitterColor {
     return [CDSegmentedViewControllerAppearance sharedInstance].splitterColor;
+}
+
+- (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle {
+    return CDSegmentedViewControllerSegmentStyleRegular;
 }
 
 + (CDSegmentedViewControllerAppearance *)appearance {

@@ -15,12 +15,13 @@
 @property (readwrite, nonatomic, strong) UIColor *segmentedBackgroundColor;
 
 @property (readwrite, nonatomic, strong) UIColor *indicatorColor;
-@property (readwrite, nonatomic, assign) CGFloat indicatorWidth;
 
 @property (readwrite, nonatomic, strong) UIColor *splitterColor;
 
 @property (readwrite, nonatomic, strong) UIFont *segmentedTitleFont;
 @property (readwrite, nonatomic, strong) UIColor *segmentedTitleColor;
 @property (readwrite, nonatomic, strong) UIColor *segmentedTitleHighlightedColor;
+
+@property (readwrite, nonatomic, assign) CGFloat segmentedButtonSpacing;
 
 @end

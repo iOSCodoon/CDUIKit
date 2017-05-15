@@ -10,6 +10,11 @@
 
 #import "CDSegmentedViewControllerAppearance.h"
 
+typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerSegmentStyle) {
+    CDSegmentedViewControllerSegmentStyleRegular = 0,
+    CDSegmentedViewControllerSegmentStyleCompact
+};
+
 @interface CDSegmentedViewController : UIViewController
 
 @property (readonly) NSInteger selectedIndex;
@@ -32,8 +37,6 @@
 
 - (UIButton *)preferredSegmentedButtonAtIndex:(NSInteger)index;
 
-- (CGFloat)preferredSegmentedIndicatorWidth;
-
 - (UIColor *)preferredSegmentedBackgroundColor;
 - (UIColor *)preferredSegmentedTitleColor;
 - (UIColor *)preferredSegmentedTitleHighlightedColor;
@@ -48,6 +51,8 @@
 - (void)reloadContents;
 
 + (CDSegmentedViewControllerAppearance *)appearance;
+
+- (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle;
 
 @end
 
