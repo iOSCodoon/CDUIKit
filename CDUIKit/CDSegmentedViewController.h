@@ -25,11 +25,18 @@ typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerSegmentStyle) {
 
 - (void)scrollIndexToVisible:(NSInteger)index animated:(BOOL)animated;
 
-- (void)didSetupViewController:(UIViewController *)viewController atIndex:(NSInteger)index;
-- (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index;
-
 @property (readonly) NSArray <UIViewController *> *viewControllers;
 
+- (void)reloadContents;
+
++ (CDSegmentedViewControllerAppearance *)appearance;
+
+@end
+
+@interface CDSegmentedViewController (Overridable)
+
+- (void)didSetupViewController:(UIViewController *)viewController atIndex:(NSInteger)index;
+- (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index;
 
 - (NSArray <UIViewController *> *)preferredViewControllers;
 - (NSArray <NSString *> *)preferredTitles;
@@ -48,13 +55,12 @@ typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerSegmentStyle) {
 - (BOOL)prefersSplitterHidden;
 - (UIColor *)preferredSplitterColor;
 
-- (void)reloadContents;
-
-+ (CDSegmentedViewControllerAppearance *)appearance;
-
 - (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle;
 
+- (UIEdgeInsets)preferredEdgeInsets;
+
 @end
+
 
 @interface UIViewController (CDSegmentedViewController)
 

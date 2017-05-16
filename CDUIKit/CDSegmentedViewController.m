@@ -13,6 +13,7 @@
 static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegmentedViewControllerKey";
 
 @interface CDSegmentedViewController () <UIScrollViewDelegate>
+@property (readwrite, nonatomic, strong) UIView *contentView;
 @property (readwrite, nonatomic, strong) UIScrollView *segmentedView;
 @property (readwrite, nonatomic, strong) UIView *indicatorView;
 @property (readwrite, nonatomic, strong) CALayer *splitterLayer;
@@ -35,11 +36,15 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    _contentView = [[UIView alloc] init];
+    _contentView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:_contentView];
+
     _segmentedView = [[UIScrollView alloc] init];
     _segmentedView.showsHorizontalScrollIndicator = NO;
     _segmentedView.showsVerticalScrollIndicator = NO;
     _segmentedView.backgroundColor = [self preferredSegmentedBackgroundColor];
-    [self.view addSubview:_segmentedView];
+    [_contentView addSubview:_segmentedView];
 
     _indicatorView = [[UIView alloc] init];
     _indicatorView.backgroundColor = [self preferredIndicatorColor];
@@ -58,7 +63,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.pagingEnabled = YES;
     _scrollView.bounces = NO;
-    [self.view addSubview:_scrollView];
+    [_contentView addSubview:_scrollView];
 
     if(self.navigationController.interactivePopGestureRecognizer != nil) {
         [_scrollView.panGestureRecognizer requireGestureRecognizerToFail:self.navigationController.interactivePopGestureRecognizer];
@@ -134,23 +139,15 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (void)layoutContents {
-    [self layoutSegments];
+    UIEdgeInsets insets = [self preferredEdgeInsets];
 
-    _scrollView.frame = CGRectMake(0, _segmentedView.bottom, self.view.width, self.view.height - _segmentedView.bottom);
+    _contentView.frame = CGRectMake(insets.left, insets.top, self.view.width - insets.left - insets.right, self.view.height - insets.top - insets.bottom);
 
-    _scrollView.contentSize = CGSizeMake(self.view.width*_viewControllers.count, _scrollView.contentSize.height);
-
-    for(NSInteger index = 0; index < _viewControllers.count; index++) {
-        _viewControllers[index].view.frame = CGRectMake(index*_scrollView.width, 0, _scrollView.width, _scrollView.height);
-    }
-}
-
-- (void)layoutSegments {
     if(_buttons.count <= 1) {
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
     } else {
-        _segmentedView.frame = CGRectMake(0, 0, self.view.width, 38);
+        _segmentedView.frame = CGRectMake(0, 0, _contentView.width, 38);
         _segmentedView.hidden = NO;
 
         CGFloat lineWidth = 1.0/[UIScreen mainScreen].scale;
@@ -179,6 +176,14 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
         UIButton *selectedButton = _buttons[_selectedIndex];
         _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - 2, selectedButton.width - 34, 2);
+    }
+
+    _scrollView.frame = CGRectMake(0, _segmentedView.bottom, _contentView.width, _contentView.height - _segmentedView.bottom);
+
+    _scrollView.contentSize = CGSizeMake(_contentView.width*_viewControllers.count, _scrollView.contentSize.height);
+
+    for(NSInteger index = 0; index < _viewControllers.count; index++) {
+        _viewControllers[index].view.frame = CGRectMake(index*_scrollView.width, 0, _scrollView.width, _scrollView.height);
     }
 }
 
@@ -304,6 +309,15 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     }
 }
 
++ (CDSegmentedViewControllerAppearance *)appearance {
+    return [CDSegmentedViewControllerAppearance sharedInstance];
+}
+
+@end
+
+
+@implementation CDSegmentedViewController (Overridable)
+
 #pragma mark - Overwritable
 
 - (void)didSetupViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
@@ -377,8 +391,8 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return CDSegmentedViewControllerSegmentStyleRegular;
 }
 
-+ (CDSegmentedViewControllerAppearance *)appearance {
-    return [CDSegmentedViewControllerAppearance sharedInstance];
+- (UIEdgeInsets)preferredEdgeInsets {
+    return UIEdgeInsetsZero;
 }
 
 @end
