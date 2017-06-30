@@ -10,15 +10,18 @@
 
 #include <objc/runtime.h>
 
+#import "CDSegmentedButton.h"
+#import "CDSegmentedViewControllerAppearance.h"
+
 static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegmentedViewControllerKey";
 
 @interface CDSegmentedViewController () <UIScrollViewDelegate>
 @property (readwrite, nonatomic, strong) UIView *contentView;
 @property (readwrite, nonatomic, strong) UIScrollView *segmentedView;
 @property (readwrite, nonatomic, strong) UIView *indicatorView;
-@property (readwrite, nonatomic, strong) CALayer *splitterLayer;
+@property (readwrite, nonatomic, strong) CALayer *separatorLayer;
 @property (readwrite, nonatomic, strong) UIScrollView *scrollView;
-@property (readwrite, nonatomic, strong) NSArray <UIButton *> *buttons;
+@property (readwrite, nonatomic, strong) NSArray <CDSegmentedButton *> *buttons;
 @property (readwrite, nonatomic, strong) NSArray <UIViewController *> *viewControllers;
 @property (readwrite, nonatomic, strong) NSArray <NSString *> *titles;
 
@@ -51,10 +54,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     _indicatorView.hidden = [self prefersIndicatorHidden];
     [_segmentedView addSubview:_indicatorView];
 
-    _splitterLayer = [CALayer layer];
-    _splitterLayer.backgroundColor = [self preferredSplitterColor].CGColor;
-    _splitterLayer.hidden = [self prefersSplitterHidden];
-    [_segmentedView.layer addSublayer:_splitterLayer];
+    _separatorLayer = [CALayer layer];
+    _separatorLayer.backgroundColor = [self preferredSeparatorColor].CGColor;
+    _separatorLayer.hidden = [self prefersSeparatorHidden];
+    [_segmentedView.layer addSublayer:_separatorLayer];
     
     _scrollView = [[UIScrollView alloc] init];
     _scrollView.backgroundColor = [UIColor clearColor];
@@ -73,7 +76,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (UIViewController *)selectedViewController {
-    return [self.viewControllers safeObjectAtIndex:_selectedIndex];
+    return [self.viewControllers objectAtIndex:_selectedIndex];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -119,11 +122,11 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     NSMutableArray *buttons = [NSMutableArray array];
 
     for(NSInteger index = 0; index < _titles.count; index++) {
-        UIButton *button = [self preferredSegmentedButtonAtIndex:index];
+        CDSegmentedButton *button = [self preferredSegmentedButtonAtIndex:index];
 
         __weak typeof(self) weakSelf = self;
         [button setActionBlock:^(UIControl *control) {
-            [weakSelf segmentedButton:(UIButton *)control atIndexDidPressed:index];
+            [weakSelf segmentedButton:(CDSegmentedButton *)control atIndexDidPressed:index];
         } forControlEvents:UIControlEventTouchUpInside];
 
         [buttons addObject:button];
@@ -147,35 +150,39 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
     } else {
-        _segmentedView.frame = CGRectMake(0, 0, _contentView.width, 38);
+        _segmentedView.frame = CGRectMake(0, 0, _contentView.width, 45);
         _segmentedView.hidden = NO;
 
-        CGFloat lineWidth = 1.0/[UIScreen mainScreen].scale;
-        _splitterLayer.frame = CGRectMake(0, _segmentedView.height - lineWidth, _segmentedView.width, lineWidth);
+        CGFloat separatorHeight = [self preferredSeparatorHeight];
+        _separatorLayer.frame = CGRectMake(0, _segmentedView.height - separatorHeight, _segmentedView.width, separatorHeight);
 
         if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
             CGFloat segmentedWidth = _segmentedView.width/_buttons.count;
             for(NSInteger index = 0; index < _buttons.count; index++) {
-                UIButton *button = _buttons[index];
+                CDSegmentedButton *button = _buttons[index];
                 [button sizeToFit];
-
-                button.frame = CGRectMake(index*segmentedWidth + (segmentedWidth - button.width)/2, 0, button.width, _segmentedView.height);
+                button.frame = CGRectMake(index*segmentedWidth, 0, segmentedWidth, _segmentedView.height);
             }
         } else {
             CGFloat offset = 5;
             for(NSInteger index = 0; index < _buttons.count; index++) {
-                UIButton *button = _buttons[index];
+                CDSegmentedButton *button = _buttons[index];
                 [button sizeToFit];
+                button.frame = CGRectMake(offset, 0, button.bounds.size.width + 34, _segmentedView.height);
 
-                button.frame = CGRectMake(offset, 0, button.width, _segmentedView.height);
-                offset += button.width;
+                offset += button.bounds.size.width;
             }
             offset += 5;
             _segmentedView.contentSize = CGSizeMake(offset, _segmentedView.height);
         }
 
-        UIButton *selectedButton = _buttons[_selectedIndex];
-        _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - 2, selectedButton.width - 34, 2);
+        CDSegmentedButton *selectedButton = _buttons[_selectedIndex];
+
+        if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
+            _indicatorView.frame = CGRectMake(selectedButton.left, _segmentedView.height - 2, selectedButton.width, 2);
+        } else {
+            _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - 2, selectedButton.width - 34, 2);
+        }
     }
 
     _scrollView.frame = CGRectMake(0, _segmentedView.bottom, _contentView.width, _contentView.height - _segmentedView.bottom);
@@ -207,12 +214,12 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     
     [self didSelectViewController:[_viewControllers objectAtIndex:index] atIndex:index];
 
-    [_buttons enumerateObjectsUsingBlock:^(UIButton *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+    [_buttons enumerateObjectsUsingBlock:^(CDSegmentedButton *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
         obj.selected = idx == index;
     }];
 }
 
-- (void)segmentedButton:(UIButton *)segmentedButton atIndexDidPressed:(NSInteger)index {
+- (void)segmentedButton:(CDSegmentedButton *)segmentedButton atIndexDidPressed:(NSInteger)index {
     [_scrollView setContentOffset:CGPointMake(index*_scrollView.width, 0) animated:YES];
 }
 
@@ -294,23 +301,18 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
         [self didSelectViewController:[_viewControllers objectAtIndex:currentIndex] atIndex:currentIndex];
 
-        [_buttons enumerateObjectsUsingBlock:^(UIButton *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
+        [_buttons enumerateObjectsUsingBlock:^(CDSegmentedButton *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
             obj.selected = idx == currentIndex;
         }];
 
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|(7 << 16) animations:^{
-            UIButton *button = _buttons[currentIndex];
-            _indicatorView.width = button.width - 34;
+            CDSegmentedButton *button = _buttons[currentIndex];
             _indicatorView.centerX = button.centerX;
         } completion:nil];
 
-        UIButton *selectedButton = _buttons[_selectedIndex];
+        CDSegmentedButton *selectedButton = _buttons[_selectedIndex];
         [_segmentedView scrollRectToVisible:selectedButton.frame animated:YES];
     }
-}
-
-+ (CDSegmentedViewControllerAppearance *)appearance {
-    return [CDSegmentedViewControllerAppearance sharedInstance];
 }
 
 @end
@@ -328,16 +330,18 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 }
 
-- (UIButton *)preferredSegmentedButtonAtIndex:(NSInteger)index {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+- (CDSegmentedButton *)preferredSegmentedButtonAtIndex:(NSInteger)index {
+    CDSegmentedButton *button = [CDSegmentedButton buttonWithType:UIButtonTypeCustom];
+    button.exclusiveTouch = YES;
     button.backgroundColor = [UIColor clearColor];
     button.adjustsImageWhenHighlighted = NO;
-    button.titleLabel.font = [self preferredSegmentedTitleFont];
-    button.contentEdgeInsets = UIEdgeInsetsMake(0, 17, 0, 17);
     [button setTitle:[_titles objectAtIndex:index] forState:UIControlStateNormal];
     [button setTitleColor:[self preferredSegmentedTitleColor] forState:UIControlStateNormal];
     [button setTitleColor:[self preferredSegmentedTitleHighlightedColor] forState:UIControlStateHighlighted|UIControlStateSelected];
     [button setTitleColor:[self preferredSegmentedTitleHighlightedColor] forState:UIControlStateSelected];
+    [button setFont:[self preferredSegmentedTitleFont] forState:UIControlStateNormal];
+    [button setFont:[self preferredSegmentedTitleHighlightedFont] forState:UIControlStateHighlighted|UIControlStateSelected];
+    [button setFont:[self preferredSegmentedTitleHighlightedFont] forState:UIControlStateSelected];
 
     return button;
 }
@@ -356,19 +360,23 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (UIColor *)preferredSegmentedBackgroundColor {
-    return [CDSegmentedViewControllerAppearance sharedInstance].segmentedBackgroundColor;
+    return [self preferredAppearance].segmentedBackgroundColor;
 }
 
 - (UIColor *)preferredSegmentedTitleColor {
-    return [CDSegmentedViewControllerAppearance sharedInstance].segmentedTitleColor;
+    return [self preferredAppearance].segmentedTitleColor;
 }
 
 - (UIColor *)preferredSegmentedTitleHighlightedColor {
-    return [CDSegmentedViewControllerAppearance sharedInstance].segmentedTitleHighlightedColor;
+    return [self preferredAppearance].segmentedTitleHighlightedColor;
 }
 
 - (UIFont *)preferredSegmentedTitleFont {
-    return [CDSegmentedViewControllerAppearance sharedInstance].segmentedTitleFont;
+    return [self preferredAppearance].segmentedTitleFont;
+}
+
+- (UIFont *)preferredSegmentedTitleHighlightedFont {
+    return [self preferredAppearance].segmentedTitleHighlightedFont;
 }
 
 - (BOOL)prefersIndicatorHidden {
@@ -376,15 +384,19 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (UIColor *)preferredIndicatorColor {
-    return [CDSegmentedViewControllerAppearance sharedInstance].indicatorColor;
+    return [self preferredAppearance].indicatorColor;
 }
 
-- (BOOL)prefersSplitterHidden {
+- (BOOL)prefersSeparatorHidden {
     return YES;
 }
 
-- (UIColor *)preferredSplitterColor {
-    return [CDSegmentedViewControllerAppearance sharedInstance].splitterColor;
+- (UIColor *)preferredSeparatorColor {
+    return [self preferredAppearance].separatorColor;
+}
+
+- (CGFloat)preferredSeparatorHeight {
+    return [self preferredAppearance].separatorHeight;
 }
 
 - (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle {
@@ -393,6 +405,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (UIEdgeInsets)preferredEdgeInsets {
     return UIEdgeInsetsZero;
+}
+
+- (CDSegmentedViewControllerAppearance *)preferredAppearance {
+    return [CDSegmentedViewControllerAppearance appearanceForStyle:[self preferredSegmentStyle]];
 }
 
 @end

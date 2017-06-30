@@ -8,12 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CDSegmentedViewControllerAppearance.h"
+@class CDSegmentedButton;
 
-typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerSegmentStyle) {
-    CDSegmentedViewControllerSegmentStyleRegular = 0,
-    CDSegmentedViewControllerSegmentStyleCompact
-};
+#import "CDSegmentedViewControllerAppearance.h"
 
 @interface CDSegmentedViewController : UIViewController
 
@@ -29,8 +26,6 @@ typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerSegmentStyle) {
 
 - (void)reloadContents;
 
-+ (CDSegmentedViewControllerAppearance *)appearance;
-
 @end
 
 @interface CDSegmentedViewController (Overridable)
@@ -42,18 +37,20 @@ typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerSegmentStyle) {
 - (NSArray <NSString *> *)preferredTitles;
 - (NSUInteger)preferredSelectedIndex;
 
-- (UIButton *)preferredSegmentedButtonAtIndex:(NSInteger)index;
+- (CDSegmentedButton *)preferredSegmentedButtonAtIndex:(NSInteger)index;
 
 - (UIColor *)preferredSegmentedBackgroundColor;
 - (UIColor *)preferredSegmentedTitleColor;
 - (UIColor *)preferredSegmentedTitleHighlightedColor;
 - (UIFont *)preferredSegmentedTitleFont;
+- (UIFont *)preferredSegmentedTitleHighlightedFont;
 
 - (BOOL)prefersIndicatorHidden;
 - (UIColor *)preferredIndicatorColor;
 
-- (BOOL)prefersSplitterHidden;
-- (UIColor *)preferredSplitterColor;
+- (BOOL)prefersSeparatorHidden;
+- (UIColor *)preferredSeparatorColor;
+- (CGFloat)preferredSeparatorHeight;
 
 - (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle;
 

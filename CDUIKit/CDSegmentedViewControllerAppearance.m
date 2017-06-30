@@ -8,15 +8,29 @@
 
 #import "CDSegmentedViewControllerAppearance.h"
 
+static CDSegmentedViewControllerAppearance *regularAppearance;
+static CDSegmentedViewControllerAppearance *compactAppearance;
+
 @implementation CDSegmentedViewControllerAppearance
 
-+ (instancetype)sharedInstance {
-    static id instance = nil;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        instance = self.new;
-    });
-    return instance;
++ (instancetype)appearanceForStyle:(CDSegmentedViewControllerSegmentStyle)style {
+    switch(style) {
+        case CDSegmentedViewControllerSegmentStyleCompact: {
+            static dispatch_once_t once;
+            dispatch_once(&once, ^{
+                compactAppearance = self.new;
+            });
+            return compactAppearance;
+        }
+        case CDSegmentedViewControllerSegmentStyleRegular: {
+            static dispatch_once_t once;
+            dispatch_once(&once, ^{
+                regularAppearance = self.new;
+            });
+            return regularAppearance;
+        }
+    }
+
 }
 
 @end
