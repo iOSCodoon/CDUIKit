@@ -204,10 +204,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (void)scrollIndexToVisible:(NSInteger)index animated:(BOOL)animated {
-    if(_selectedIndex == index) {
-        return;
-    }
-
     [self viewControllerAtIndex:index willAppearAnimated:NO];
 
     [_scrollView setContentOffset:CGPointMake(index*_scrollView.width, 0) animated:animated];
