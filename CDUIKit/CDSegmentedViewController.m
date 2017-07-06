@@ -57,7 +57,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     _separatorLayer = [CALayer layer];
     _separatorLayer.backgroundColor = [self preferredSeparatorColor].CGColor;
     _separatorLayer.hidden = [self prefersSeparatorHidden];
-    [_segmentedView.layer addSublayer:_separatorLayer];
+    [_contentView.layer addSublayer:_separatorLayer];
     
     _scrollView = [[UIScrollView alloc] init];
     _scrollView.backgroundColor = [UIColor clearColor];
@@ -146,15 +146,15 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
     _contentView.frame = CGRectMake(insets.left, insets.top, self.view.width - insets.left - insets.right, self.view.height - insets.top - insets.bottom);
 
+    CGFloat separatorHeight = [self preferredSeparatorHeight];
+    _separatorLayer.frame = CGRectMake(0, _segmentedView.height - separatorHeight, _contentView.width, separatorHeight);
+
     if(_buttons.count <= 1) {
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
     } else {
         _segmentedView.frame = CGRectMake(0, 0, _contentView.width, 45);
         _segmentedView.hidden = NO;
-
-        CGFloat separatorHeight = [self preferredSeparatorHeight];
-        _separatorLayer.frame = CGRectMake(0, _segmentedView.height - separatorHeight, _segmentedView.width, separatorHeight);
 
         if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
             CGFloat segmentedWidth = _segmentedView.width/_buttons.count;
@@ -204,6 +204,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (void)scrollIndexToVisible:(NSInteger)index animated:(BOOL)animated {
+    if(_selectedIndex == index) {
+        return;
+    }
+
     [self viewControllerAtIndex:index willAppearAnimated:NO];
 
     [_scrollView setContentOffset:CGPointMake(index*_scrollView.width, 0) animated:animated];
