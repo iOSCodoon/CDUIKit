@@ -32,7 +32,7 @@
         [self.fonts setObject:font forKey:@(state)];
     }
 
-    [self setNeedsLayout];
+    [self layoutIfNeeded];
 }
 
 - (void)layoutSubviews {
