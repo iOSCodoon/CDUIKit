@@ -30,7 +30,6 @@
 
 @interface CDSegmentedViewController (Overridable)
 
-- (void)didSetupViewController:(UIViewController *)viewController atIndex:(NSInteger)index;
 - (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index;
 
 - (NSArray <UIViewController *> *)preferredViewControllers;
