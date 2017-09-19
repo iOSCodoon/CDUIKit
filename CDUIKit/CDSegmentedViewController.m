@@ -39,8 +39,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _selectedIndex = NSNotFound;
-    
     _contentView = [[UIView alloc] init];
     _contentView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_contentView];
@@ -315,10 +313,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 @implementation CDSegmentedViewController (Overridable)
 
 #pragma mark - Overwritable
-
-- (void)didSetupViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
-    
-}
 
 - (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
     
