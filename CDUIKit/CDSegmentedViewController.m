@@ -82,7 +82,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-    [self layoutContents];
+    [self layoutContentsWithSelectedIndex:_selectedIndex];
 }
 
 - (void)cleanContents {
@@ -135,12 +135,12 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     
     _buttons = buttons;
     
-    [self layoutContents];
-    
-    [self scrollIndexToVisible:[self preferredSelectedIndex] animated:NO];
+    NSInteger preferredSelectedIndex = [self preferredSelectedIndex];
+    [self layoutContentsWithSelectedIndex:preferredSelectedIndex];
+    [self scrollIndexToVisible:preferredSelectedIndex animated:NO];
 }
 
-- (void)layoutContents {
+- (void)layoutContentsWithSelectedIndex:(NSInteger)selectedIndex {
     UIEdgeInsets insets = [self preferredEdgeInsets];
     
     _contentView.frame = CGRectMake(insets.left, insets.top, self.view.width - insets.left - insets.right, self.view.height - insets.top - insets.bottom);
@@ -175,7 +175,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
             _segmentedView.contentSize = CGSizeMake(offset, _segmentedView.height);
         }
         
-        CDSegmentedButton *selectedButton = _buttons[_selectedIndex];
+        CDSegmentedButton *selectedButton = _buttons[selectedIndex];
         
         if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
             _indicatorView.frame = CGRectMake(selectedButton.left, _segmentedView.height - 2, selectedButton.width, 2);
