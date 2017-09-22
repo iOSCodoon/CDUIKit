@@ -39,6 +39,8 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _selectedIndex = NSNotFound;
+    
     _contentView = [[UIView alloc] init];
     _contentView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_contentView];
