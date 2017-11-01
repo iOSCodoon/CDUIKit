@@ -179,8 +179,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         
         CDSegmentedButton *selectedButton = _buttons[selectedIndex];
         
+        CGFloat indicatorHeight = [self preferredIndicatorHeight];
+        CGFloat indicatorMarginBottom = [self preferredIndicatorMarginBottom];
         if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
-            _indicatorView.frame = CGRectMake(selectedButton.left, _segmentedView.height - 2, selectedButton.width, 2);
+            _indicatorView.frame = CGRectMake(selectedButton.left, _segmentedView.height - indicatorHeight - indicatorMarginBottom, selectedButton.width, indicatorHeight);
         } else {
             _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - 2, selectedButton.width - 34, 2);
         }
@@ -375,6 +377,14 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (UIColor *)preferredIndicatorColor {
     return [self preferredAppearance].indicatorColor;
+}
+
+- (CGFloat)preferredIndicatorHeight {
+    return 2;
+}
+
+- (CGFloat)preferredIndicatorMarginBottom {
+    return 0;
 }
 
 - (BOOL)prefersSeparatorHidden {

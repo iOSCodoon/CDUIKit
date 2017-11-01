@@ -46,6 +46,8 @@
 
 - (BOOL)prefersIndicatorHidden;
 - (UIColor *)preferredIndicatorColor;
+- (CGFloat)preferredIndicatorHeight;
+- (CGFloat)preferredIndicatorMarginBottom;
 
 - (BOOL)prefersSeparatorHidden;
 - (UIColor *)preferredSeparatorColor;
