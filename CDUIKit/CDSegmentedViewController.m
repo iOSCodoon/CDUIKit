@@ -184,7 +184,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
             _indicatorView.frame = CGRectMake(selectedButton.left, _segmentedView.height - indicatorHeight - indicatorMarginBottom, selectedButton.width, indicatorHeight);
         } else {
-            _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - 2, selectedButton.width - 34, 2);
+            _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - indicatorHeight - indicatorMarginBottom, selectedButton.width - 34, indicatorHeight);
         }
     }
     
