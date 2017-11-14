@@ -9,6 +9,7 @@
 #import "CDTabBarController.h"
 
 #define kDefaultTabBarHeight		49.f
+#define kTabBarBottomMargin         ([UIScreen mainScreen].bounds.size.height == 812 ? 34 : 0)
 
 @interface CDTabBarController () <CDTabBarOverlayDelegate>
 
@@ -26,12 +27,20 @@
 	
 	if(self.tabBarHeight <= 0)
 	{
-		self.tabBarHeight = kDefaultTabBarHeight;
+		self.tabBarHeight = kDefaultTabBarHeight + kTabBarBottomMargin;
 	}
 	
 	self.tabBar.frame = CGRectMake(0, self.view.frame.size.height - self.tabBarHeight, self.view.frame.size.width,  self.tabBarHeight);
 	
     [self setupTabBarOverlay];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
+    if ([UIScreen mainScreen].bounds.size.height == 812 || [UIScreen mainScreen].bounds.size.width == 812) {
+        self.tabBar.frame = CGRectMake(0, self.view.frame.size.height - self.tabBarHeight, self.view.frame.size.width,  self.tabBarHeight);
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
