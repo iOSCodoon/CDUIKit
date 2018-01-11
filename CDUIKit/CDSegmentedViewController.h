@@ -19,6 +19,7 @@
 @property (readonly) UIViewController *selectedViewController;
 
 @property (readonly) UIScrollView *scrollView;
+@property (readonly) UIScrollView *segmentedView;
 
 - (void)scrollIndexToVisible:(NSInteger)index animated:(BOOL)animated;
 
@@ -56,6 +57,8 @@
 - (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle;
 
 - (UIEdgeInsets)preferredEdgeInsets;
+
+- (CGSize)preferredSegementedViewSize;
 
 @end
 

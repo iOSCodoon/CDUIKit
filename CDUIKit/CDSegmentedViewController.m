@@ -48,6 +48,8 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     _segmentedView = [[UIScrollView alloc] init];
     _segmentedView.showsHorizontalScrollIndicator = NO;
     _segmentedView.showsVerticalScrollIndicator = NO;
+    _segmentedView.bounces = NO;
+    _segmentedView.scrollsToTop = NO;
     _segmentedView.backgroundColor = [self preferredSegmentedBackgroundColor];
     [_contentView addSubview:_segmentedView];
     
@@ -68,6 +70,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.pagingEnabled = YES;
     _scrollView.bounces = NO;
+    _scrollView.scrollsToTop = NO;
     [_contentView addSubview:_scrollView];
     
     if(self.navigationController.interactivePopGestureRecognizer != nil) {
@@ -154,7 +157,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
     } else {
-        _segmentedView.frame = CGRectMake(0, 0, _contentView.width, 45);
+        CGSize segmentedViewSize = [self preferredSegementedViewSize];
+        segmentedViewSize.width = MIN(segmentedViewSize.width, _contentView.width);
+        segmentedViewSize.height = MIN(segmentedViewSize.height, _contentView.height);
+        _segmentedView.frame = CGRectMake((_contentView.width - segmentedViewSize.width)/2, 0, segmentedViewSize.width, segmentedViewSize.height);
         _segmentedView.hidden = NO;
         
         if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
@@ -164,6 +170,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
                 [button sizeToFit];
                 button.frame = CGRectMake(index*segmentedWidth, 0, segmentedWidth, _segmentedView.height);
             }
+            _segmentedView.contentSize = CGSizeMake(_segmentedView.bounds.size.width, _segmentedView.bounds.size.height);
         } else {
             CGFloat offset = 5;
             for(NSInteger index = 0; index < _buttons.count; index++) {
@@ -405,6 +412,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (UIEdgeInsets)preferredEdgeInsets {
     return UIEdgeInsetsZero;
+}
+
+- (CGSize)preferredSegementedViewSize {
+    return CGSizeMake(CGFLOAT_MAX, 45);
 }
 
 - (CDSegmentedViewControllerAppearance *)preferredAppearance {
