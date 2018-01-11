@@ -157,7 +157,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
     } else {
-        CGSize segmentedViewSize = [self preferredSegementedViewSize];
+        CGSize segmentedViewSize = [self preferredSegmentedViewSize];
         segmentedViewSize.width = MIN(segmentedViewSize.width, _contentView.width);
         segmentedViewSize.height = MIN(segmentedViewSize.height, _contentView.height);
         _segmentedView.frame = CGRectMake((_contentView.width - segmentedViewSize.width)/2, 0, segmentedViewSize.width, segmentedViewSize.height);
@@ -414,7 +414,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return UIEdgeInsetsZero;
 }
 
-- (CGSize)preferredSegementedViewSize {
+- (CGSize)preferredSegmentedViewSize {
     return CGSizeMake(CGFLOAT_MAX, 45);
 }
 

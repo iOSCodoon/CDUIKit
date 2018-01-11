@@ -58,7 +58,7 @@
 
 - (UIEdgeInsets)preferredEdgeInsets;
 
-- (CGSize)preferredSegementedViewSize;
+- (CGSize)preferredSegmentedViewSize;
 
 @end
 
