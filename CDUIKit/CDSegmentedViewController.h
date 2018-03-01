@@ -33,6 +33,8 @@
 
 - (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index;
 
+- (void)didLayoutContents;
+
 - (NSArray <UIViewController *> *)preferredViewControllers;
 - (NSArray <NSString *> *)preferredTitles;
 - (NSUInteger)preferredSelectedIndex;
@@ -68,3 +70,4 @@
 @property (readonly) CDSegmentedViewController *segmentedViewController;
 
 @end
+

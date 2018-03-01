@@ -168,7 +168,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
             for(NSInteger index = 0; index < _buttons.count; index++) {
                 CDSegmentedButton *button = _buttons[index];
                 [button sizeToFit];
-                button.frame = CGRectMake(index*segmentedWidth, 0, segmentedWidth, _segmentedView.height);
+                button.frame = CGRectMake(index*segmentedWidth + (segmentedWidth - button.bounds.size.width - 34)/2, 0, button.bounds.size.width + 34, _segmentedView.height);
             }
             _segmentedView.contentSize = CGSizeMake(_segmentedView.bounds.size.width, _segmentedView.bounds.size.height);
         } else {
@@ -188,11 +188,8 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         
         CGFloat indicatorHeight = [self preferredIndicatorHeight];
         CGFloat indicatorMarginBottom = [self preferredIndicatorMarginBottom];
-        if([self preferredSegmentStyle] == CDSegmentedViewControllerSegmentStyleRegular) {
-            _indicatorView.frame = CGRectMake(selectedButton.left, _segmentedView.height - indicatorHeight - indicatorMarginBottom, selectedButton.width, indicatorHeight);
-        } else {
-            _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - indicatorHeight - indicatorMarginBottom, selectedButton.width - 34, indicatorHeight);
-        }
+        
+        _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - indicatorHeight - indicatorMarginBottom, selectedButton.width - 34, indicatorHeight);
     }
     
     _scrollView.frame = CGRectMake(0, _segmentedView.bottom, _contentView.width, _contentView.height - _segmentedView.bottom);
@@ -204,6 +201,8 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
             _viewControllers[index].view.frame = CGRectMake(index*_scrollView.width, 0, _scrollView.width, _scrollView.height);
         }
     }
+    
+    [self didLayoutContents];
 }
 
 - (void)setViewControllers:(NSArray<UIViewController *> *)viewControllers {
@@ -310,6 +309,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|(7 << 16) animations:^{
             CDSegmentedButton *button = _buttons[currentIndex];
+            _indicatorView.width = button.width - 34;
             _indicatorView.centerX = button.centerX;
         } completion:nil];
         
@@ -324,6 +324,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 @implementation CDSegmentedViewController (Overridable)
 
 #pragma mark - Overwritable
+
+- (void)didLayoutContents {
+    
+}
 
 - (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
     
