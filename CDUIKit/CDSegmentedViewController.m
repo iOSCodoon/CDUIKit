@@ -150,9 +150,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     
     _contentView.frame = CGRectMake(insets.left, insets.top, self.view.width - insets.left - insets.right, self.view.height - insets.top - insets.bottom);
     
-    CGFloat separatorHeight = [self preferredSeparatorHeight];
-    _separatorLayer.frame = CGRectMake(0, _segmentedView.height - separatorHeight, _contentView.width, separatorHeight);
-    
     if(_buttons.count <= 1) {
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
@@ -191,8 +188,11 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         
         _indicatorView.frame = CGRectMake(selectedButton.left + 17, _segmentedView.height - indicatorHeight - indicatorMarginBottom, selectedButton.width - 34, indicatorHeight);
     }
-    
-    _scrollView.frame = CGRectMake(0, _segmentedView.bottom, _contentView.width, _contentView.height - _segmentedView.bottom);
+
+    CGFloat separatorHeight = [self preferredSeparatorHeight];
+    _separatorLayer.frame = CGRectMake(0, _segmentedView.bottom, _contentView.width, separatorHeight);
+
+    _scrollView.frame = CGRectMake(0, _segmentedView.bottom + separatorHeight, _contentView.width, _contentView.height - _segmentedView.bottom - separatorHeight);
     
     _scrollView.contentSize = CGSizeMake(_contentView.width*_viewControllers.count, _scrollView.contentSize.height);
     
