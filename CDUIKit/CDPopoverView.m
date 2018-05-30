@@ -164,13 +164,13 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
         _willDisplayBlock();
     }
 
-    [UIView animateWithDuration:.25f delay:0.f options:UIViewAnimationOptionBeginFromCurrentState|curve animations:^{
+    [UIView animateWithDuration:animated ? 0.25 : 0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|curve animations:^{
         if(_options&CDPopoverViewAnimationOptionFadeInOut) {
-            _contentView.alpha = 1.f;
+            _contentView.alpha = 1;
         }
 
         _contentView.frame = _targetRect;
-        _backgroundView.alpha = 1.f;
+        _backgroundView.alpha = 1;
     } completion:^(BOOL finished) {
         _toggled = YES;
         _animating = NO;
@@ -196,7 +196,7 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
         _willDismissBlock();
     }
 
-    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|curve animations:^{
+    [UIView animateWithDuration:animated ? 0.25 : 0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|curve animations:^{
         if(_options&CDPopoverViewAnimationOptionFadeInOut) {
             _contentView.alpha = 0;
         }
