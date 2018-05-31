@@ -150,7 +150,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     
     _contentView.frame = CGRectMake(insets.left, insets.top, self.view.width - insets.left - insets.right, self.view.height - insets.top - insets.bottom);
     
-    if(_buttons.count <= 1) {
+    if(_buttons.count <= 1 && [self hidesSegmentedViewForSinglePage]) {
         _segmentedView.height = 0;
         _segmentedView.hidden = YES;
     } else {
@@ -360,6 +360,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (NSArray <UIViewController *> *)preferredViewControllers {
     return nil;
+}
+
+- (BOOL)hidesSegmentedViewForSinglePage {
+    return YES;
 }
 
 - (UIColor *)preferredSegmentedBackgroundColor {

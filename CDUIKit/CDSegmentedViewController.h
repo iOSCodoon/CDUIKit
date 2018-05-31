@@ -41,6 +41,7 @@
 
 - (CDSegmentedButton *)preferredSegmentedButtonAtIndex:(NSInteger)index;
 
+- (BOOL)hidesSegmentedViewForSinglePage;
 - (UIColor *)preferredSegmentedBackgroundColor;
 - (UIColor *)preferredSegmentedTitleColor;
 - (UIColor *)preferredSegmentedTitleHighlightedColor;
