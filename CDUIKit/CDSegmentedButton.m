@@ -19,31 +19,32 @@
 @implementation CDSegmentedButton
 
 - (NSMutableDictionary *)fonts {
-    if(_fonts == nil) {
+    if (_fonts == nil) {
         _fonts = [[NSMutableDictionary alloc] init];
     }
     return _fonts;
 }
 
 - (void)setFont:(UIFont *)font forState:(NSUInteger)state {
-    if(font == nil) {
+    if (font == nil) {
         [self.fonts removeObjectForKey:@(state)];
     } else {
         [self.fonts setObject:font forKey:@(state)];
     }
 
+    [self setNeedsLayout];
     [self layoutIfNeeded];
 }
 
 - (void)layoutSubviews {
     UIFont *font = [self.fonts objectForKey:@(self.state)];
 
-    if(font == nil) {
+    if (font == nil) {
         font = [self.fonts objectForKey:@(UIControlStateNormal)];
     }
 
     self.titleLabel.font = font;
-
+    
     [super layoutSubviews];
 }
 

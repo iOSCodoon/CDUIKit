@@ -19,7 +19,7 @@
 @property (readonly) UIViewController *selectedViewController;
 
 @property (readonly) UIScrollView *scrollView;
-@property (readonly) UIScrollView *segmentedView;
+@property (readonly) UIView *segmentedView;
 
 - (void)scrollIndexToVisible:(NSInteger)index animated:(BOOL)animated;
 
@@ -41,7 +41,9 @@
 
 - (CDSegmentedButton *)preferredSegmentedButtonAtIndex:(NSInteger)index;
 
-- (BOOL)hidesSegmentedViewForSinglePage;
+- (BOOL)prefersSegmentedViewHidden;
+- (BOOL)prefersHidesSegmentedViewForSinglePage;
+
 - (UIColor *)preferredSegmentedBackgroundColor;
 - (UIColor *)preferredSegmentedTitleColor;
 - (UIColor *)preferredSegmentedTitleHighlightedColor;
@@ -69,6 +71,8 @@
 @interface UIViewController (CDSegmentedViewController)
 
 @property (readonly) CDSegmentedViewController *segmentedViewController;
+
+@property (readwrite, nonatomic, assign) BOOL segmentedInitialized;
 
 @end
 
