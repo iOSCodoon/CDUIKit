@@ -1,6 +1,6 @@
 //
 //  CDSegmentedView.h
-//  AFNetworking
+//  CodoonSport
 //
 //  Created by Jinxiao on 2019/3/20.
 //
@@ -15,6 +15,7 @@
 @protocol CDSegmentedViewDelegate <NSObject>
 
 - (void)segmentedView:(CDSegmentedView *)segmentedView didSelectIndex:(NSInteger)index;
+- (void)segmentedView:(CDSegmentedView *)segmentedView willLayoutIndicatorView:(UIView *)indicatorView withTargetFrame:(inout CGRect *)targetFrame;
 
 @end
 
@@ -32,12 +33,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readwrite, nonatomic, strong) UIColor *indicatorColor;
 @property (readwrite, nonatomic, assign) BOOL hidesIndicator;
-@property (readwrite, nonatomic, assign) CGFloat indicatorHeight;
-@property (readwrite, nonatomic, assign) CGFloat indicatorMarginBottom;
 
 @property (readwrite, nonatomic, strong) UIColor *separatorColor;
 @property (readwrite, nonatomic, assign) BOOL hidesSeparator;
 @property (readwrite, nonatomic, assign) CGFloat separatorHeight;
+
+@property (readwrite, nonatomic, assign) UIEdgeInsets edgeInsets;
 
 @end
 

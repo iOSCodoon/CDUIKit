@@ -105,9 +105,8 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         _segmentedView = [[CDSegmentedView alloc] init];
         _segmentedView.backgroundColor = [self preferredSegmentedBackgroundColor];
         _segmentedView.segmentedStyle = [self preferredSegmentStyle];
+        _segmentedView.edgeInsets = [self preferredSegmentedViewEdgeInsets];
         _segmentedView.indicatorColor = [self preferredIndicatorColor];
-        _segmentedView.indicatorHeight = [self preferredIndicatorHeight];
-        _segmentedView.indicatorMarginBottom = [self preferredIndicatorMarginBottom];
         _segmentedView.hidesIndicator = [self prefersIndicatorHidden];
         _segmentedView.separatorColor = [self preferredSeparatorColor];
         _segmentedView.hidesSeparator = [self prefersSeparatorHidden];
@@ -252,20 +251,46 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     [_scrollView setContentOffset:CGPointMake(index*_scrollView.width, 0) animated:YES];
 }
 
+- (void)segmentedView:(CDSegmentedView *)segmentedView willLayoutIndicatorView:(UIView *)indicatorView withTargetFrame:(inout CGRect *)targetFrame {
+    [self willLayoutIndicatorView:indicatorView withTargetFrame:targetFrame];
+}
+
 @end
 
 
 @implementation CDSegmentedViewController (Overridable)
 
+- (CDSegmentedViewControllerAppearance *)preferredAppearance {
+    return [CDSegmentedViewControllerAppearance appearanceForStyle:[self preferredSegmentStyle]];
+}
+
 #pragma mark - Overwritable
+
+- (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
+    
+}
 
 - (void)didLayoutContents {
     
 }
 
-- (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
-    
+- (NSArray <NSString *> *)preferredTitles {
+    return nil;
 }
+
+- (NSArray <UIViewController *> *)preferredViewControllers {
+    return nil;
+}
+
+- (NSUInteger)preferredSelectedIndex {
+    return 0;
+}
+
+- (UIEdgeInsets)preferredEdgeInsets {
+    return UIEdgeInsetsZero;
+}
+
+#pragma mark - Segmented View
 
 - (CDSegmentedButton *)preferredSegmentedButtonAtIndex:(NSInteger)index {
     CDSegmentedButton *button = [CDSegmentedButton buttonWithType:UIButtonTypeCustom];
@@ -282,24 +307,20 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return button;
 }
 
-- (NSUInteger)preferredSelectedIndex {
-    return 0;
-}
-
-- (NSArray <NSString *> *)preferredTitles {
-    return nil;
-}
-
-- (NSArray <UIViewController *> *)preferredViewControllers {
-    return nil;
-}
-
 - (BOOL)prefersSegmentedViewHidden {
     return NO;
 }
 
 - (BOOL)prefersHidesSegmentedViewForSinglePage {
     return YES;
+}
+
+- (CGSize)preferredSegmentedViewSize {
+    return CGSizeMake(CGFLOAT_MAX, 45);
+}
+
+- (UIEdgeInsets)preferredSegmentedViewEdgeInsets {
+    return UIEdgeInsetsZero;
 }
 
 - (UIColor *)preferredSegmentedBackgroundColor {
@@ -322,6 +343,12 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return [self preferredAppearance].segmentedTitleHighlightedFont;
 }
 
+- (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle {
+    return CDSegmentedViewControllerSegmentStyleRegular;
+}
+
+#pragma mark - Indicator
+
 - (BOOL)prefersIndicatorHidden {
     return NO;
 }
@@ -330,13 +357,11 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return [self preferredAppearance].indicatorColor;
 }
 
-- (CGFloat)preferredIndicatorHeight {
-    return 2;
+- (void)willLayoutIndicatorView:(UIView *)indicatorView withTargetFrame:(inout CGRect *)targetFrame {
+    
 }
 
-- (CGFloat)preferredIndicatorMarginBottom {
-    return 0;
-}
+#pragma mark - Separator
 
 - (BOOL)prefersSeparatorHidden {
     return YES;
@@ -350,23 +375,8 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return [self preferredAppearance].separatorHeight;
 }
 
-- (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle {
-    return CDSegmentedViewControllerSegmentStyleRegular;
-}
-
-- (UIEdgeInsets)preferredEdgeInsets {
-    return UIEdgeInsetsZero;
-}
-
-- (CGSize)preferredSegmentedViewSize {
-    return CGSizeMake(CGFLOAT_MAX, 45);
-}
-
-- (CDSegmentedViewControllerAppearance *)preferredAppearance {
-    return [CDSegmentedViewControllerAppearance appearanceForStyle:[self preferredSegmentStyle]];
-}
-
 @end
+
 
 @implementation UIViewController (CDSegmentedViewController)
 

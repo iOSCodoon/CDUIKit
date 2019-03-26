@@ -35,14 +35,23 @@
 
 - (void)didLayoutContents;
 
-- (NSArray <UIViewController *> *)preferredViewControllers;
+- (UIEdgeInsets)preferredEdgeInsets;
+
 - (NSArray <NSString *> *)preferredTitles;
+- (NSArray <UIViewController *> *)preferredViewControllers;
+
 - (NSUInteger)preferredSelectedIndex;
+
+
+#pragma mark - Segmented View
 
 - (CDSegmentedButton *)preferredSegmentedButtonAtIndex:(NSInteger)index;
 
 - (BOOL)prefersSegmentedViewHidden;
 - (BOOL)prefersHidesSegmentedViewForSinglePage;
+
+- (UIEdgeInsets)preferredSegmentedViewEdgeInsets;
+- (CGSize)preferredSegmentedViewSize;
 
 - (UIColor *)preferredSegmentedBackgroundColor;
 - (UIColor *)preferredSegmentedTitleColor;
@@ -50,20 +59,21 @@
 - (UIFont *)preferredSegmentedTitleFont;
 - (UIFont *)preferredSegmentedTitleHighlightedFont;
 
+- (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle;
+
+#pragma mark - Indicator
+
 - (BOOL)prefersIndicatorHidden;
 - (UIColor *)preferredIndicatorColor;
-- (CGFloat)preferredIndicatorHeight;
-- (CGFloat)preferredIndicatorMarginBottom;
+- (void)willLayoutIndicatorView:(UIView *)indicatorView withTargetFrame:(inout CGRect *)targetFrame;
+
+
+#pragma mark - Separator
 
 - (BOOL)prefersSeparatorHidden;
 - (UIColor *)preferredSeparatorColor;
 - (CGFloat)preferredSeparatorHeight;
 
-- (CDSegmentedViewControllerSegmentStyle)preferredSegmentStyle;
-
-- (UIEdgeInsets)preferredEdgeInsets;
-
-- (CGSize)preferredSegmentedViewSize;
 
 @end
 

@@ -1,6 +1,6 @@
 //
 //  CDSegmentedView.m
-//  AFNetworking
+//  CodoonSport
 //
 //  Created by Jinxiao on 2019/3/20.
 //
@@ -47,16 +47,6 @@
     _indicatorView.hidden = _hidesIndicator;
 }
 
-- (void)setIndicatorHeight:(CGFloat)indicatorHeight {
-    _indicatorHeight = indicatorHeight;
-    [self setNeedsLayout];
-}
-
-- (void)setIndicatorMarginBottom:(CGFloat)indicatorMarginBottom {
-    _indicatorMarginBottom = indicatorMarginBottom;
-    [self setNeedsLayout];
-}
-
 - (void)setSeparatorColor:(UIColor *)separatorColor {
     _separatorColor = separatorColor;
     _separatorLayer.backgroundColor = _separatorColor.CGColor;
@@ -65,6 +55,11 @@
 - (void)setHidesSeparator:(BOOL)hidesSeparator {
     _hidesSeparator = hidesSeparator;
     _separatorLayer.hidden = _hidesSeparator;
+}
+
+- (void)setEdgeInsets:(UIEdgeInsets)edgeInsets {
+    _edgeInsets = edgeInsets;
+    _scrollView.contentInset = edgeInsets;
 }
 
 - (void)layoutSubviews {
@@ -81,12 +76,11 @@
         }
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width, _scrollView.bounds.size.height);
     } else {
-        CGFloat offset = 5;
+        CGFloat offset = 0;
         for(NSInteger index = 0; index < _buttons.count; index++) {
             CDSegmentedButton *button = _buttons[index];
             [button sizeToFit];
             button.frame = CGRectMake(offset, 0, button.bounds.size.width + 34, _scrollView.bounds.size.height);
-            
             offset += button.bounds.size.width;
         }
         offset += 5;
@@ -95,8 +89,16 @@
     
     _separatorLayer.frame = CGRectMake(0, self.bounds.size.height, self.bounds.size.width, _separatorHeight);
     
+    [self layoutIndicatorView];
+}
+
+- (void)layoutIndicatorView {
     CDSegmentedButton *selectedButton = _buttons[_selectedIndex];
-    _indicatorView.frame = CGRectMake(selectedButton.frame.origin.x + 17, self.bounds.size.height - _indicatorHeight - _indicatorMarginBottom, selectedButton.bounds.size.width - 34, _indicatorHeight);
+    CGRect indicatorFrame = CGRectMake(selectedButton.frame.origin.x + 17, self.bounds.size.height - 2, selectedButton.bounds.size.width - 34, 2);
+    if ([_delegate respondsToSelector:@selector(segmentedView:willLayoutIndicatorView:withTargetFrame:)]) {
+        [_delegate segmentedView:self willLayoutIndicatorView:_indicatorView withTargetFrame:&indicatorFrame];
+    }
+    _indicatorView.frame = indicatorFrame;
 }
 
 - (void)segmentedButtonDidPressed:(CDSegmentedButton *)button {
@@ -126,13 +128,17 @@
     }];
     
     [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|(7 << 16) animations:^{
-        CDSegmentedButton *button = self.buttons[selectedIndex];
-        self.indicatorView.width = button.width - 34;
-        self.indicatorView.centerX = button.centerX;
+        [self layoutIndicatorView];
     } completion:nil];
     
     CDSegmentedButton *selectedButton = _buttons[_selectedIndex];
-    [_scrollView scrollRectToVisible:selectedButton.frame animated:YES];
+    CGRect targetFrame = selectedButton.frame;
+//    CGRect transformedFrame = [self convertRect:targetFrame fromView:selectedButton.superview];
+//    if (CGRectGetMaxX(transformedFrame) + _edgeInsets.right > self.bounds.size.width) {
+//        targetFrame = CGRectApplyAffineTransform(targetFrame, CGAffineTransformMakeTranslation(CGRectGetMaxX(transformedFrame) + _edgeInsets.right - self.bounds.size.width, 0));
+//    }
+//
+    [_scrollView scrollRectToVisible:targetFrame animated:YES];
 }
 
 @end
