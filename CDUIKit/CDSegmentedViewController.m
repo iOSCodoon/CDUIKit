@@ -273,6 +273,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     
 }
 
+- (void)didLoadViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
+    
+}
+
 - (void)didLayoutContents {
     
 }
