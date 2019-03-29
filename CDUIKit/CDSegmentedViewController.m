@@ -170,6 +170,9 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     UIViewController *viewController = [_viewControllers objectAtIndex:index];
     if(!viewController.segmentedInitialized) {
         viewController.view.frame = CGRectMake(_scrollView.width*index, 0, _scrollView.width, _scrollView.height);
+        
+        [self didLoadViewController:viewController atIndex:index];
+        
         viewController.segmentedInitialized = YES;
     }
     
