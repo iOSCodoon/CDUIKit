@@ -150,7 +150,7 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
 }
 
 - (void)displayAnimated:(BOOL)animated completion:(void (^)(void))completion {
-    [self displayAnimated:animated duration:animated ? 0.25 : 0 completion:completion]
+    [self displayAnimated:animated duration:animated ? 0.25 : 0 completion:completion];
 }
 
 - (void)displayAnimated:(BOOL)animated duration:(double)duration completion:(void (^)(void))completion {
@@ -214,7 +214,7 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
 }
 
 - (void)dismissAnimated:(BOOL)animated completion:(void (^)(void))completion {
-    [self dismissAnimated:animated duration:animated ? 0.25 : 0 completion:completion]
+    [self dismissAnimated:animated duration:animated ? 0.25 : 0 completion:completion];
 }
 
 - (void)dismissAnimated:(BOOL)animated duration:(double)duration completion:(void (^)(void))completion {
