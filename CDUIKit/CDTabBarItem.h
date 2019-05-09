@@ -19,6 +19,10 @@
 @property (readwrite, nonatomic, strong) UIColor *titleHighlightedColor;
 @property (readwrite, nonatomic, strong) UIColor *titleSelectedColor;
 
+@property (readwrite, nonatomic, strong) UIImage *backgroundImage;
+@property (readwrite, nonatomic, strong) UIImage *backgroundHighlightedImage;
+@property (readwrite, nonatomic, strong) UIImage *backgroundSelectedImage;
+
 @property (readwrite, nonatomic, strong) CDTabBarBadge *badge;
 
 + (NSSet *)keyPaths;

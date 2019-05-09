@@ -12,7 +12,7 @@
 
 + (NSSet *)keyPaths
 {
-	return [NSSet setWithObjects:@"title", @"iconImage", @"iconHighlightedImage", @"iconSelectedImage", @"titleColor", @"titleHighlightedColor", @"titleSelectedColor", @"badge", nil];
+	return [NSSet setWithObjects:@"title", @"iconImage", @"iconHighlightedImage", @"iconSelectedImage", @"titleColor", @"titleHighlightedColor", @"titleSelectedColor", @"badge", @"backgroundImage", @"backgroundHighlightedImage", @"backgroundSelectedImage", nil];
 }
 
 @end

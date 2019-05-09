@@ -28,9 +28,13 @@ typedef NS_ENUM(NSUInteger, CDPopoverViewBackgroundStyle) {
 - (instancetype)initWithContainerView:(UIView *)containerView contentView:(UIView *)contentView options:(CDPopoverViewAnimationOptions)options backgroundStyle:(CDPopoverViewBackgroundStyle)backgroundStyle;
 
 - (void)displayAnimated:(BOOL)animated completion:(void (^)(void))completion;
+- (void)displayAnimated:(BOOL)animated duration:(double)duration completion:(void (^)(void))completion;
+
 - (void)dismissAnimated:(BOOL)animated completion:(void (^)(void))completion;
+- (void)dismissAnimated:(BOOL)animated duration:(double)duration completion:(void (^)(void))completion;
 
 - (void)toggleAnimated:(BOOL)animated completion:(void (^)(void))completion;
+- (void)toggleAnimated:(BOOL)animated duration:(double)duration completion:(void (^)(void))completion;
 
 @property (readonly) BOOL toggled;
 
