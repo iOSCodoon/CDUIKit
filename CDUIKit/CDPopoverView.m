@@ -138,14 +138,22 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
 }
 
 - (void)toggleAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self toggleAnimated:animated duration:animated ? 0.25 : 0 completion:completion];
+}
+
+- (void)toggleAnimated:(BOOL)animated duration:(double)duration completion:(void (^)(void))completion {
     if(_toggled) {
-        [self dismissAnimated:animated completion:completion];
+        [self dismissAnimated:animated duration:duration completion:completion];
     } else {
-        [self displayAnimated:animated completion:completion];
+        [self displayAnimated:animated duration:duration completion:completion];
     }
 }
 
 - (void)displayAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self displayAnimated:animated duration:animated ? 0.25 : 0 completion:completion]
+}
+
+- (void)displayAnimated:(BOOL)animated duration:(double)duration completion:(void (^)(void))completion {
     if(_animating) {
         return;
     }
@@ -164,28 +172,52 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
         _willDisplayBlock();
     }
 
-    [UIView animateWithDuration:animated ? 0.25 : 0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|curve animations:^{
+    if (animated) {
+        [UIView animateWithDuration:animated ? 0.25 : 0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|curve animations:^{
+            if(_options&CDPopoverViewAnimationOptionFadeInOut) {
+                _contentView.alpha = 1;
+            }
+            
+            _contentView.frame = _targetRect;
+            _backgroundView.alpha = 1;
+        } completion:^(BOOL finished) {
+            _toggled = YES;
+            _animating = NO;
+            
+            if(completion) {
+                completion();
+            }
+            
+            if(_didDisplayBlock != nil) {
+                _didDisplayBlock();
+            }
+        }];
+    } else {
         if(_options&CDPopoverViewAnimationOptionFadeInOut) {
             _contentView.alpha = 1;
         }
-
+        
         _contentView.frame = _targetRect;
         _backgroundView.alpha = 1;
-    } completion:^(BOOL finished) {
+        
         _toggled = YES;
         _animating = NO;
-
+        
         if(completion) {
             completion();
         }
-
+        
         if(_didDisplayBlock != nil) {
             _didDisplayBlock();
         }
-    }];
+    }
 }
 
 - (void)dismissAnimated:(BOOL)animated completion:(void (^)(void))completion {
+    [self dismissAnimated:animated duration:animated ? 0.25 : 0 completion:completion]
+}
+
+- (void)dismissAnimated:(BOOL)animated duration:(double)duration completion:(void (^)(void))completion {
     if(_animating) {
         return;
     }
@@ -196,27 +228,49 @@ static char *UIViewPopoverViewKey = "UIViewPopoverViewKey";
         _willDismissBlock();
     }
 
-    [UIView animateWithDuration:animated ? 0.25 : 0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|curve animations:^{
+    if (animated) {
+        [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionBeginFromCurrentState|curve animations:^{
+            if(_options&CDPopoverViewAnimationOptionFadeInOut) {
+                _contentView.alpha = 0;
+            }
+            
+            _contentView.frame = _sourceRect;
+            _backgroundView.alpha = 0;
+        } completion:^(BOOL finished) {
+            _toggled = NO;
+            _animating = NO;
+            
+            [self removeFromSuperview];
+            
+            if(completion) {
+                completion();
+            }
+            
+            if(_didDismissBlock) {
+                _didDismissBlock();
+            }
+        }];
+    } else {
         if(_options&CDPopoverViewAnimationOptionFadeInOut) {
             _contentView.alpha = 0;
         }
-
+        
         _contentView.frame = _sourceRect;
         _backgroundView.alpha = 0;
-    } completion:^(BOOL finished) {
+        
         _toggled = NO;
         _animating = NO;
-
+        
         [self removeFromSuperview];
-
+        
         if(completion) {
             completion();
         }
-
+        
         if(_didDismissBlock) {
             _didDismissBlock();
         }
-    }];
+    }
 }
 
 @end

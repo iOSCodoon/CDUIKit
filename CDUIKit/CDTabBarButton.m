@@ -29,8 +29,6 @@
     self = [super initWithFrame:CGRectZero];
 	if(self)
 	{
-        self.clipsToBounds = YES;
-
 		self.titleLabel.font = [UIFont systemFontOfSize:10.f];
 		self.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.adjustsImageWhenHighlighted = NO;
@@ -57,38 +55,40 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     CDTabBarItem *tabBarItem = (CDTabBarItem *)object;
-	if([keyPath isEqualToString:@"title"])
-	{
+	if([keyPath isEqualToString:@"title"]) {
 		[self setTitle:tabBarItem.title forState:UIControlStateNormal];
 	}
-	else if([keyPath isEqualToString:@"iconImage"])
-	{
+    else if([keyPath isEqualToString:@"iconImage"]) {
 		[self setImage:self.item.iconImage forState:UIControlStateNormal];
 	}
-	else if([keyPath isEqualToString:@"iconHighlightedImage"])
-	{
+	else if([keyPath isEqualToString:@"iconHighlightedImage"]) {
 		[self setImage:self.item.iconHighlightedImage forState:UIControlStateHighlighted];
 		[self setImage:self.item.iconHighlightedImage forState:UIControlStateSelected|UIControlStateHighlighted];
 	}
-	else if([keyPath isEqualToString:@"iconSelectedImage"])
-	{
+	else if([keyPath isEqualToString:@"iconSelectedImage"]) {
 		[self setImage:self.item.iconSelectedImage forState:UIControlStateSelected];
 	}
-	else if([keyPath isEqualToString:@"titleColor"])
-	{
+	else if([keyPath isEqualToString:@"titleColor"]) {
 		[self setTitleColor:self.item.titleColor forState:UIControlStateNormal];
 	}
-    else if([keyPath isEqualToString:@"titleHighlightedColor"])
-    {
+    else if([keyPath isEqualToString:@"titleHighlightedColor"]) {
         [self setTitleColor:self.item.titleHighlightedColor forState:UIControlStateHighlighted];
 		[self setTitleColor:self.item.titleHighlightedColor forState:UIControlStateHighlighted|UIControlStateSelected];
     }
-    else if([keyPath isEqualToString:@"titleSelectedColor"])
-    {
+    else if([keyPath isEqualToString:@"titleSelectedColor"]) {
         [self setTitleColor:self.item.titleSelectedColor forState:UIControlStateSelected];
     }
-    else if([keyPath isEqualToString:@"badge"])
-    {
+    else if ([keyPath isEqualToString:@"backgroundImage"]) {
+        [self setBackgroundImage:self.item.backgroundImage forState:UIControlStateNormal];
+    }
+    else if ([keyPath isEqualToString:@"backgroundHighlightedImage"]) {
+        [self setBackgroundImage:self.item.backgroundHighlightedImage forState:UIControlStateHighlighted];
+        [self setBackgroundImage:self.item.backgroundHighlightedImage forState:UIControlStateHighlighted|UIControlStateSelected];
+    }
+    else if ([keyPath isEqualToString:@"backgroundSelectedImage"]) {
+        [self setBackgroundImage:self.item.backgroundSelectedImage forState:UIControlStateSelected];
+    }
+    else if([keyPath isEqualToString:@"badge"]) {
         if(self.item.badge == nil)
         {
             self.badgeView = nil;
@@ -135,6 +135,9 @@
 {
 	[self setTitle:self.item.title forState:UIControlStateNormal];
 	[self setImage:self.item.iconImage forState:UIControlStateNormal];
+    [self setBackgroundImage:self.item.backgroundImage forState:UIControlStateNormal];
+    [self setBackgroundImage:self.item.backgroundHighlightedImage forState:UIControlStateSelected|UIControlStateHighlighted];
+    [self setBackgroundImage:self.item.backgroundSelectedImage forState:UIControlStateSelected];
     
     if([self.item respondsToSelector:@selector(iconHighlightedImage)])
     {
@@ -219,10 +222,11 @@
 		return CGRectZero;
 	}
 	
-	if([self currentImage])
-	{
+	if ([self currentImage]) {
 		return CGRectMake(self.titleOffset.x, self.imageHeight + self.titleOffset.y, CGRectGetWidth(contentRect), self.titleHeight);
-	}
+    } else if ([self currentBackgroundImage]) {
+        return CGRectMake(self.titleOffset.x, CGRectGetHeight(contentRect) - self.titleHeight - 3, CGRectGetWidth(contentRect), self.titleHeight);
+    }
 	
 	return contentRect;
 }
