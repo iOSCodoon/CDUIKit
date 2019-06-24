@@ -121,6 +121,7 @@
 }
 
 - (void)setSelectedIndex:(NSInteger)selectedIndex {
+    NSInteger previousIndex = _selectedIndex;
     _selectedIndex = selectedIndex;
     
     [_buttons enumerateObjectsUsingBlock:^(CDSegmentedButton *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -131,14 +132,15 @@
         [self layoutIndicatorView];
     } completion:nil];
     
-    CDSegmentedButton *selectedButton = _buttons[_selectedIndex];
-    CGRect targetFrame = selectedButton.frame;
-//    CGRect transformedFrame = [self convertRect:targetFrame fromView:selectedButton.superview];
-//    if (CGRectGetMaxX(transformedFrame) + _edgeInsets.right > self.bounds.size.width) {
-//        targetFrame = CGRectApplyAffineTransform(targetFrame, CGAffineTransformMakeTranslation(CGRectGetMaxX(transformedFrame) + _edgeInsets.right - self.bounds.size.width, 0));
-//    }
-//
-    [_scrollView scrollRectToVisible:targetFrame animated:YES];
+    CGRect visibleFrame = _buttons[_selectedIndex].frame;
+    if (previousIndex < selectedIndex) {
+        CGRect tailFrame = _buttons[MIN(_buttons.count - 1, _selectedIndex + 2)].frame;
+        visibleFrame = CGRectMake(CGRectGetMinX(visibleFrame), 0, MIN(CGRectGetMaxX(tailFrame) - CGRectGetMinX(visibleFrame), _scrollView.width - _edgeInsets.right - _edgeInsets.left), _scrollView.contentSize.height);
+    } else if (previousIndex > selectedIndex) {
+        CGRect leadFrame = _buttons[MAX(0, _selectedIndex - 2)].frame;
+        visibleFrame = CGRectMake(CGRectGetMinX(leadFrame), 0, MIN(CGRectGetMaxX(visibleFrame) - CGRectGetMinX(leadFrame), _scrollView.width - _edgeInsets.right - _edgeInsets.left), _scrollView.contentSize.height);
+    }
+    [_scrollView scrollRectToVisible:visibleFrame animated:YES];
 }
 
 @end
