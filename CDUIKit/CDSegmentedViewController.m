@@ -125,6 +125,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     
     NSInteger preferredSelectedIndex = [self preferredSelectedIndex];
     [self layoutContentsWithSelectedIndex:preferredSelectedIndex];
+    [self viewControllerAtIndex:preferredSelectedIndex willAppearAnimated:NO];
     [self scrollIndexToVisible:preferredSelectedIndex animated:NO];
 }
 
@@ -157,8 +158,6 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (void)scrollIndexToVisible:(NSInteger)index animated:(BOOL)animated {
-    [self viewControllerAtIndex:index willAppearAnimated:NO];
-    
     [_scrollView setContentOffset:CGPointMake(index*_scrollView.width, 0) animated:animated];
     
     if(!animated) {
