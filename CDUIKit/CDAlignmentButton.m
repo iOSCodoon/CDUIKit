@@ -13,8 +13,9 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
 
-    CGFloat titleWidth = CGRectGetWidth(self.titleLabel.bounds);
-    CGFloat titleHeight = CGRectGetHeight(self.titleLabel.bounds);
+    CGSize titleSize = [[self titleForState:self.state] boundingRectWithSize:self.bounds.size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingTruncatesLastVisibleLine attributes:@{NSFontAttributeName: self.titleLabel.font} context:NULL].size;
+    CGFloat titleWidth = titleSize.width;
+    CGFloat titleHeight = titleSize.height;
 
     CGFloat imageWidth = CGRectGetWidth(self.imageView.bounds);
     CGFloat imageHeight = CGRectGetHeight(self.imageView.bounds);
