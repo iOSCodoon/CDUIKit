@@ -17,8 +17,9 @@
     CGFloat titleWidth = titleSize.width;
     CGFloat titleHeight = titleSize.height;
 
-    CGFloat imageWidth = CGRectGetWidth(self.imageView.bounds);
-    CGFloat imageHeight = CGRectGetHeight(self.imageView.bounds);
+    CGSize imageSize = [self imageForState:self.state].size;
+    CGFloat imageWidth = imageSize.width;
+    CGFloat imageHeight = imageSize.height;
 
     CGFloat totalHeight = (imageHeight + titleHeight + _spacing);
 
