@@ -13,7 +13,14 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
 
-    CGSize titleSize = [[self titleForState:self.state] boundingRectWithSize:self.bounds.size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingTruncatesLastVisibleLine attributes:@{NSFontAttributeName: self.titleLabel.font} context:NULL].size;
+    CGSize titleSize = CGSizeZero;
+
+    if ([self attributedTitleForState:self.state]) {
+        titleSize = [[self attributedTitleForState:self.state] boundingRectWithSize:self.bounds.size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingTruncatesLastVisibleLine context:NULL].size;
+    } else {
+        titleSize = [[self titleForState:self.state] boundingRectWithSize:self.bounds.size options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingTruncatesLastVisibleLine attributes:@{NSFontAttributeName: self.titleLabel.font} context:NULL].size;
+    }
+    
     CGFloat titleWidth = titleSize.width;
     CGFloat titleHeight = titleSize.height;
 
