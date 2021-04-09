@@ -33,15 +33,15 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
     _selectedIndex = NSNotFound;
-    
+
     _contentView = [[UIView alloc] init];
     _contentView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_contentView];
-    
+
     _scrollView = [[UIScrollView alloc] init];
     _scrollView.backgroundColor = [UIColor clearColor];
     _scrollView.delegate = self;
@@ -51,15 +51,15 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     _scrollView.bounces = NO;
     _scrollView.scrollsToTop = NO;
     [_contentView addSubview:_scrollView];
-    
+
     if (self.navigationController.interactivePopGestureRecognizer != nil) {
         [_scrollView.panGestureRecognizer requireGestureRecognizerToFail:self.navigationController.interactivePopGestureRecognizer];
     }
-    
+
     if (@available(iOS 11.0, *)) {
         _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
-    
+
     [self reloadContents];
 }
 
@@ -69,35 +69,35 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    
+
     [self layoutContentsWithSelectedIndex:_selectedIndex];
 }
 
 - (void)cleanContents {
     _titles = nil;
-    
+
     [_viewControllers enumerateObjectsUsingBlock:^(UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [obj removeFromParentViewController];
         [obj.view removeFromSuperview];
     }];
     _viewControllers = nil;
-    
+
     [_segmentedView removeFromSuperview];
 }
 
 - (void)reloadContents {
     [self cleanContents];
-    
+
     _viewControllers = [self preferredViewControllers];
     if (_viewControllers.count == 0) {
         return;
     }
-    
+
     [_viewControllers enumerateObjectsUsingBlock:^(UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         CDWeakableReference *reference = [[CDWeakableReference alloc] initWithObject:self];
         objc_setAssociatedObject(obj, &UIViewControllerSegmentedViewControllerKey, reference, OBJC_ASSOCIATION_RETAIN);
     }];
-    
+
     if ((_viewControllers.count == 1 && [self prefersHidesSegmentedViewForSinglePage]) || [self prefersSegmentedViewHidden]) {
         [_segmentedView removeFromSuperview];
         _segmentedView = nil;
@@ -112,7 +112,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         _segmentedView.hidesSeparator = [self prefersSeparatorHidden];
         _segmentedView.delegate = self;
         [_contentView addSubview:_segmentedView];
-        
+
         _titles = [self preferredTitles];
 
         NSMutableArray *buttons = [NSMutableArray array];
@@ -122,7 +122,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         }];
         _segmentedView.buttons = buttons;
     }
-    
+
     NSInteger preferredSelectedIndex = [self preferredSelectedIndex];
     [self layoutContentsWithSelectedIndex:preferredSelectedIndex];
     [self viewControllerAtIndex:preferredSelectedIndex willAppearAnimated:NO];
@@ -131,35 +131,39 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (void)layoutContentsWithSelectedIndex:(NSInteger)selectedIndex {
     UIEdgeInsets insets = [self preferredEdgeInsets];
-    
+
     _contentView.frame = CGRectMake(insets.left, insets.top, self.view.width - insets.left - insets.right, self.view.height - insets.top - insets.bottom);
-    
+
     if (_segmentedView != nil) {
         CGSize segmentedViewSize = [self preferredSegmentedViewSize];
         segmentedViewSize.width = MIN(segmentedViewSize.width, _contentView.width);
         segmentedViewSize.height = MIN(segmentedViewSize.height, _contentView.height);
         _segmentedView.frame = CGRectMake((_contentView.width - segmentedViewSize.width)/2, 0, segmentedViewSize.width, segmentedViewSize.height);
         _segmentedView.selectedIndex = selectedIndex;
-        
+
         [_segmentedView setNeedsLayout];
     }
 
     _scrollView.frame = CGRectMake(0, _segmentedView.bottom, _contentView.width, _contentView.height - _segmentedView.bottom);
-    
+
     _scrollView.contentSize = CGSizeMake(_contentView.width*_viewControllers.count, _scrollView.contentSize.height);
-    
+
     for (NSInteger index = 0; index < _viewControllers.count; index++) {
         if (_viewControllers[index].segmentedInitialized) {
             _viewControllers[index].view.frame = CGRectMake(index*_scrollView.width, 0, _scrollView.width, _scrollView.height);
         }
     }
-    
+
     [self didLayoutContents];
 }
 
 - (void)scrollIndexToVisible:(NSInteger)index animated:(BOOL)animated {
+    if (index >= _viewControllers.count) {
+        return;
+    }
+
     [_scrollView setContentOffset:CGPointMake(index*_scrollView.width, 0) animated:animated];
-    
+
     if(!animated) {
         [self didEndScrolling];
     }
@@ -169,28 +173,28 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     UIViewController *viewController = [_viewControllers objectAtIndex:index];
     if(!viewController.segmentedInitialized) {
         viewController.view.frame = CGRectMake(_scrollView.width*index, 0, _scrollView.width, _scrollView.height);
-        
+
         [self didLoadViewController:viewController atIndex:index];
-        
+
         viewController.segmentedInitialized = YES;
     }
-    
+
     [_scrollView addSubview:viewController.view];
-    
+
     [self addChildViewController:viewController];
     [viewController didMoveToParentViewController:self];
-    
+
     return viewController;
 }
 
 - (UIViewController *)viewControllerAtIndex:(NSInteger)index willDisappearAnimated:(BOOL)animated {
     UIViewController *viewController = [_viewControllers objectAtIndex:index];
-    
+
     [viewController.view removeFromSuperview];
-    
+
     [viewController willMoveToParentViewController:nil];
     [viewController removeFromParentViewController];
-    
+
     return viewController;
 }
 
@@ -199,24 +203,24 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     NSInteger previousIndex = (NSInteger)(scrollView.contentOffset.x + 1)/scrollView.width;
     NSInteger nextIndex = (NSInteger)(scrollView.width + scrollView.contentOffset.x - 1)/scrollView.width;
-    
+
     if(_previousIndex != previousIndex) {
         if(previousIndex < _previousIndex) {
             [self viewControllerAtIndex:previousIndex willAppearAnimated:NO];
         } else {
             [self viewControllerAtIndex:_previousIndex willDisappearAnimated:NO];
         }
-        
+
         _previousIndex = previousIndex;
     }
-    
+
     if(_nextIndex != nextIndex) {
         if(nextIndex > _nextIndex) {
             [self viewControllerAtIndex:nextIndex willAppearAnimated:NO];
         } else {
             [self viewControllerAtIndex:_nextIndex willDisappearAnimated:NO];
         }
-        
+
         _nextIndex = nextIndex;
     }
 }
@@ -237,13 +241,13 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (void)didEndScrolling {
     NSInteger currentIndex = (NSInteger)(_scrollView.width/2 + _scrollView.contentOffset.x)/_scrollView.width;
-    
+
     if(_selectedIndex != currentIndex) {
         _selectedIndex = currentIndex;
-        
+
         [self didSelectViewController:[_viewControllers objectAtIndex:currentIndex] atIndex:currentIndex];
     }
-    
+
     _segmentedView.selectedIndex = currentIndex;
 }
 
@@ -269,15 +273,15 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 #pragma mark - Overwritable
 
 - (void)didSelectViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
-    
+
 }
 
 - (void)didLoadViewController:(UIViewController *)viewController atIndex:(NSInteger)index {
-    
+
 }
 
 - (void)didLayoutContents {
-    
+
 }
 
 - (NSArray <NSString *> *)preferredTitles {
@@ -364,7 +368,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (void)willLayoutIndicatorView:(UIView *)indicatorView withTargetFrame:(inout CGRect *)targetFrame {
-    
+
 }
 
 #pragma mark - Separator
@@ -391,11 +395,11 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     if(reference == nil) {
         return nil;
     }
-    
+
     if([reference.object isKindOfClass:[CDSegmentedViewController class]]) {
         return reference.object;
     }
-    
+
     return nil;
 }
 
