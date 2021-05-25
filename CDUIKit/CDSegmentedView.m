@@ -94,9 +94,11 @@
 
 - (void)layoutIndicatorView {
     CDSegmentedButton *selectedButton = _buttons[_selectedIndex];
-    CGRect indicatorFrame = CGRectMake(selectedButton.frame.origin.x + 17, self.bounds.size.height - 2, selectedButton.bounds.size.width - 34, 2);
+    CGRect indicatorFrame = selectedButton.frame;
     if ([_delegate respondsToSelector:@selector(segmentedView:willLayoutIndicatorView:withTargetFrame:)]) {
         [_delegate segmentedView:self willLayoutIndicatorView:_indicatorView withTargetFrame:&indicatorFrame];
+    } else {
+        indicatorFrame = CGRectMake(selectedButton.frame.origin.x + 17, self.bounds.size.height - 2, selectedButton.bounds.size.width - 34, 2);
     }
     _indicatorView.frame = indicatorFrame;
 }
