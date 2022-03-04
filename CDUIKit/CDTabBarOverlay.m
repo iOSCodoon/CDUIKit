@@ -24,8 +24,6 @@
     self = [super initWithFrame:frame];
     if(self)
 	{
-        self.clipsToBounds = YES;
-        
 		self.backgroundImageView = [[UIImageView alloc] initWithFrame:self.bounds];
 		self.backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 		[self addSubview:self.backgroundImageView];

@@ -12,6 +12,7 @@
 @interface CDSegmentedView ()
 @property (readwrite, nonatomic, strong) UIScrollView *scrollView;
 @property (readwrite, nonatomic, strong) UIView *indicatorView;
+@property (readwrite, nonatomic, strong) UIImageView *indicatorImageView;
 @property (readwrite, nonatomic, strong) CALayer *separatorLayer;
 @end
 
@@ -31,10 +32,24 @@
     _indicatorView = [[UIView alloc] init];
     [_scrollView addSubview:_indicatorView];
     
+    _indicatorImageView = [UIImageView new];
+    _indicatorImageView.contentMode = UIViewContentModeScaleAspectFit;
+    [_scrollView addSubview:_indicatorImageView];
+    
     _separatorLayer = [CALayer layer];
     [self.layer addSublayer:_separatorLayer];
     
     return self;
+}
+
+- (void)setIndicatorStyle:(CDSegmentedViewControllerIndicatorStyle)indicatorStyle {
+    _indicatorStyle = indicatorStyle;
+    [self configIndicator];
+}
+
+- (void)setIndicatorImage:(UIImage *)indicatorImage {
+    _indicatorImage = indicatorImage;
+    _indicatorImageView.image = _indicatorImage;
 }
 
 - (void)setIndicatorColor:(UIColor *)indicatorColor {
@@ -44,7 +59,7 @@
 
 - (void)setHidesIndicator:(BOOL)hidesIndicator {
     _hidesIndicator = hidesIndicator;
-    _indicatorView.hidden = _hidesIndicator;
+    [self configIndicator];
 }
 
 - (void)setSeparatorColor:(UIColor *)separatorColor {
@@ -95,12 +110,29 @@
 - (void)layoutIndicatorView {
     CDSegmentedButton *selectedButton = _buttons[_selectedIndex];
     CGRect indicatorFrame = selectedButton.frame;
-    if ([_delegate respondsToSelector:@selector(segmentedView:willLayoutIndicatorView:withTargetFrame:)]) {
-        [_delegate segmentedView:self willLayoutIndicatorView:_indicatorView withTargetFrame:&indicatorFrame];
-    } else {
-        indicatorFrame = CGRectMake(selectedButton.frame.origin.x + 17, self.bounds.size.height - 2, selectedButton.bounds.size.width - 34, 2);
+    
+    switch (_indicatorStyle) {
+        case CDSegmentedViewControllerIndicatorStyleLine: {
+            if ([_delegate respondsToSelector:@selector(segmentedView:willLayoutIndicatorView:withTargetFrame:)]) {
+                [_delegate segmentedView:self willLayoutIndicatorView:_indicatorView withTargetFrame:&indicatorFrame];
+            } else {
+                indicatorFrame = CGRectMake(selectedButton.frame.origin.x + 17, self.bounds.size.height - 2, selectedButton.bounds.size.width - 34, 2);
+            }
+            _indicatorView.frame = indicatorFrame;
+            break;
+        }
+        case CDSegmentedViewControllerIndicatorStyleImage: {
+            if ([_delegate respondsToSelector:@selector(segmentedView:willLayoutIndicatorView:withTargetFrame:)]) {
+                [_delegate segmentedView:self willLayoutIndicatorView:_indicatorImageView withTargetFrame:&indicatorFrame];
+            } else {
+                indicatorFrame = CGRectMake(CGRectGetMidX(selectedButton.frame) - 7.5, CGRectGetMaxY(self.bounds) - 9, 15, 5);
+            }
+            _indicatorImageView.frame = indicatorFrame;
+            break;;
+        }
+        default:
+            break;
     }
-    _indicatorView.frame = indicatorFrame;
 }
 
 - (void)segmentedButtonDidPressed:(CDSegmentedButton *)button {
@@ -143,6 +175,24 @@
         visibleFrame = CGRectMake(CGRectGetMinX(leadFrame), 0, MIN(CGRectGetMaxX(visibleFrame) - CGRectGetMinX(leadFrame), _scrollView.width - _edgeInsets.right - _edgeInsets.left), _scrollView.contentSize.height);
     }
     [_scrollView scrollRectToVisible:visibleFrame animated:YES];
+}
+
+- (void)configIndicator {
+    switch (_indicatorStyle) {
+        case CDSegmentedViewControllerIndicatorStyleLine: {
+            _indicatorImageView.hidden = YES;
+            _indicatorView.hidden = _hidesIndicator;
+            break;
+        }
+        case CDSegmentedViewControllerIndicatorStyleImage: {
+            _indicatorImageView.hidden = _hidesIndicator;
+            _indicatorView.hidden = YES;
+            break;;
+        }
+            
+        default:
+            break;
+    }
 }
 
 @end

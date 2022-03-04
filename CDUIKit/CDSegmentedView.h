@@ -31,7 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readwrite, nonatomic, assign) CDSegmentedViewControllerSegmentStyle segmentedStyle;
 
+@property (readwrite, nonatomic, assign) CDSegmentedViewControllerIndicatorStyle indicatorStyle;
 @property (readwrite, nonatomic, strong) UIColor *indicatorColor;
+@property (readwrite, nonatomic, strong) UIImage *indicatorImage;
 @property (readwrite, nonatomic, assign) BOOL hidesIndicator;
 
 @property (readwrite, nonatomic, strong) UIColor *separatorColor;
