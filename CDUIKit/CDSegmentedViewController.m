@@ -106,7 +106,20 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         _segmentedView.backgroundColor = [self preferredSegmentedBackgroundColor];
         _segmentedView.segmentedStyle = [self preferredSegmentStyle];
         _segmentedView.edgeInsets = [self preferredSegmentedViewEdgeInsets];
-        _segmentedView.indicatorColor = [self preferredIndicatorColor];
+        _segmentedView.indicatorStyle = [self prefersIndicatorStyle];
+        switch (_segmentedView.indicatorStyle) {
+            case CDSegmentedViewControllerIndicatorStyleLine: {
+                _segmentedView.indicatorColor = [self preferredIndicatorColor];
+                break;
+            }
+            case CDSegmentedViewControllerIndicatorStyleImage: {
+                _segmentedView.indicatorImage = [self preferredIndicatorImage];
+                break;
+            }
+            default:
+                break;
+        }
+        
         _segmentedView.hidesIndicator = [self prefersIndicatorHidden];
         _segmentedView.separatorColor = [self preferredSeparatorColor];
         _segmentedView.hidesSeparator = [self prefersSeparatorHidden];
@@ -363,8 +376,16 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     return NO;
 }
 
+- (CDSegmentedViewControllerIndicatorStyle)prefersIndicatorStyle {
+    return [self preferredAppearance].indicatorStyle;
+}
+
 - (UIColor *)preferredIndicatorColor {
     return [self preferredAppearance].indicatorColor;
+}
+
+- (UIImage *)preferredIndicatorImage {
+    return [self preferredAppearance].indicatorImage;
 }
 
 - (void)willLayoutIndicatorView:(UIView *)indicatorView withTargetFrame:(inout CGRect *)targetFrame {

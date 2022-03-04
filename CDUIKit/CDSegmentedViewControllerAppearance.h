@@ -13,6 +13,12 @@ typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerSegmentStyle) {
     CDSegmentedViewControllerSegmentStyleCompact
 };
 
+typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerIndicatorStyle) {
+    CDSegmentedViewControllerIndicatorStyleLine = 0,
+    CDSegmentedViewControllerIndicatorStyleImage
+};
+
+
 
 @interface CDSegmentedViewControllerAppearance : NSObject
 
@@ -20,7 +26,9 @@ typedef NS_ENUM(NSUInteger, CDSegmentedViewControllerSegmentStyle) {
 
 @property (readwrite, nonatomic, strong) UIColor *segmentedBackgroundColor;
 
+@property (readwrite, nonatomic, assign) CDSegmentedViewControllerIndicatorStyle indicatorStyle;
 @property (readwrite, nonatomic, strong) UIColor *indicatorColor;
+@property (readwrite, nonatomic, strong) UIImage *indicatorImage;
 
 @property (readwrite, nonatomic, strong) UIColor *separatorColor;
 @property (readwrite, nonatomic, assign) CGFloat separatorHeight;

@@ -64,8 +64,10 @@
 
 #pragma mark - Indicator
 
+- (CDSegmentedViewControllerIndicatorStyle)prefersIndicatorStyle;
 - (BOOL)prefersIndicatorHidden;
 - (UIColor *)preferredIndicatorColor;
+- (UIImage *)preferredIndicatorImage;
 - (void)willLayoutIndicatorView:(UIView *)indicatorView withTargetFrame:(inout CGRect *)targetFrame;
 
 
