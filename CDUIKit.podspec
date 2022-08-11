@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'CDUIKit'
-  s.version = '0.0.37'
+  s.version = '0.0.38'
   s.license = 'MIT'
   s.summary = 'Basic toolset for CodoonSport.'
   s.homepage = 'https://github.com/iOSCodoon'
