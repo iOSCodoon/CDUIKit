@@ -64,6 +64,9 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (UIViewController *)selectedViewController {
+    if (_selectedIndex >= _viewControllers.count) {
+        return nil;
+    }
     return [self.viewControllers objectAtIndex:_selectedIndex];
 }
 
@@ -183,6 +186,9 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (UIViewController *)viewControllerAtIndex:(NSInteger)index willAppearAnimated:(BOOL)animated {
+    if (index >= _viewControllers.count) {
+        return nil;
+    }
     UIViewController *viewController = [_viewControllers objectAtIndex:index];
     if(!viewController.segmentedInitialized) {
         viewController.view.frame = CGRectMake(_scrollView.width*index, 0, _scrollView.width, _scrollView.height);
@@ -201,6 +207,9 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 }
 
 - (UIViewController *)viewControllerAtIndex:(NSInteger)index willDisappearAnimated:(BOOL)animated {
+    if (index >= _viewControllers.count) {
+        return nil;
+    }
     UIViewController *viewController = [_viewControllers objectAtIndex:index];
 
     [viewController.view removeFromSuperview];
@@ -255,6 +264,9 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 - (void)didEndScrolling {
     NSInteger currentIndex = (NSInteger)(_scrollView.width/2 + _scrollView.contentOffset.x)/_scrollView.width;
 
+    if (currentIndex >= _viewControllers.count) {
+        return;
+    }
     if(_selectedIndex != currentIndex) {
         _selectedIndex = currentIndex;
 
