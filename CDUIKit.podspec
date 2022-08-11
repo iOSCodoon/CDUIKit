@@ -15,5 +15,5 @@ Pod::Spec.new do |s|
   s.prefix_header_contents = '#import "CDFoundation.h"', '#import "CDExtensionKit.h"'
   
   s.public_header_files = 'CDUIKit/*.h'
-  s.source_files = 'CDUIKit/*.{h,m}'
+  s.source_files = 'CDUIKit/*.{c,h,hh,m,mm}'
 end
