@@ -27,6 +27,8 @@
 
 - (void)reloadContents;
 
+- (void)hideRedDot:(NSInteger)index;
+
 @end
 
 @interface CDSegmentedViewController (Overridable)
@@ -38,6 +40,7 @@
 
 - (UIEdgeInsets)preferredEdgeInsets;
 
+- (NSArray <NSNumber *> *)preferredRedDots;
 - (NSArray <NSString *> *)preferredTitles;
 - (NSArray <UIViewController *> *)preferredViewControllers;
 

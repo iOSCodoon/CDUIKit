@@ -22,6 +22,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 @property (readwrite, nonatomic, strong) UIScrollView *scrollView;
 @property (readwrite, nonatomic, strong) NSArray <UIViewController *> *viewControllers;
 @property (readwrite, nonatomic, strong) NSArray <NSString *> *titles;
+@property (readwrite, nonatomic, strong) NSArray <NSNumber *> *reddots;
 
 @property (readwrite, nonatomic, assign) NSInteger previousIndex;
 @property (readwrite, nonatomic, assign) NSInteger nextIndex;
@@ -78,6 +79,7 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (void)cleanContents {
     _titles = nil;
+    _reddots = nil;
 
     [_viewControllers enumerateObjectsUsingBlock:^(UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [obj removeFromParentViewController];
@@ -86,6 +88,13 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
     _viewControllers = nil;
 
     [_segmentedView removeFromSuperview];
+}
+
+- (void)hideRedDot:(NSInteger)index {
+    if (index < _segmentedView.buttons.count) {
+        CDSegmentedButton *btn = _segmentedView.buttons[index];
+        btn.showRedDot = NO;
+    }
 }
 
 - (void)reloadContents {
@@ -130,10 +139,16 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
         [_contentView addSubview:_segmentedView];
 
         _titles = [self preferredTitles];
+        _reddots = [self preferredRedDots];
 
         NSMutableArray *buttons = [NSMutableArray array];
         [_titles enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            BOOL showRedDot = NO;
+            if (idx < self.reddots.count) {
+                showRedDot = [self.reddots[idx] boolValue];
+            }
             CDSegmentedButton *button = [self preferredSegmentedButtonAtIndex:idx];
+            button.showRedDot = showRedDot;
             [buttons addObject:button];
         }];
         _segmentedView.buttons = buttons;
@@ -307,6 +322,10 @@ static char *UIViewControllerSegmentedViewControllerKey = "UIViewControllerSegme
 
 - (void)didLayoutContents {
 
+}
+
+- (NSArray<NSNumber *> *)preferredRedDots {
+    return nil;
 }
 
 - (NSArray <NSString *> *)preferredTitles {
