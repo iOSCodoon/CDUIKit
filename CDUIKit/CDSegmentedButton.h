@@ -10,6 +10,8 @@
 
 @interface CDSegmentedButton : UIButton
 
+@property (nonatomic, assign) BOOL showRedDot;
+
 - (void)setFont:(UIFont *)font forState:(NSUInteger)state;
 
 @end

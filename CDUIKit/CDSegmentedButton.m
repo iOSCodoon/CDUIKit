@@ -14,9 +14,34 @@
 @property (strong, nonatomic) UIFont *highlightedFont;
 @property (strong, nonatomic) UIFont *selectedFont;
 @property (strong, nonatomic) UIFont *disabledFont;
+@property (strong, nonatomic) UIView *redDotView;
 @end
 
 @implementation CDSegmentedButton
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        UIView *redDotView = [UIView new];
+        self.redDotView = redDotView;
+        redDotView.hidden = YES;
+        redDotView.backgroundColor = [UIColor redColor];
+        redDotView.layer.cornerRadius = 2.5;
+        redDotView.clipsToBounds = YES;
+        redDotView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.titleLabel addSubview:redDotView];
+        [redDotView.widthAnchor constraintEqualToConstant:5].active = YES;
+        [redDotView.heightAnchor constraintEqualToConstant:5].active = YES;
+        [redDotView.topAnchor constraintEqualToAnchor:self.titleLabel.topAnchor constant:0].active = YES;
+        [redDotView.leftAnchor constraintEqualToAnchor:self.titleLabel.rightAnchor constant:5].active = YES;
+    }
+    return self;
+}
+
+- (void)setShowRedDot:(BOOL)showRedDot {
+    _showRedDot = showRedDot;
+    self.redDotView.hidden = !showRedDot;
+}
 
 - (NSMutableDictionary *)fonts {
     if (_fonts == nil) {
