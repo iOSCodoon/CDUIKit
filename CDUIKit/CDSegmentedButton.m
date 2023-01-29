@@ -28,12 +28,7 @@
         redDotView.backgroundColor = [UIColor redColor];
         redDotView.layer.cornerRadius = 2.5;
         redDotView.clipsToBounds = YES;
-        redDotView.translatesAutoresizingMaskIntoConstraints = NO;
         [self.titleLabel addSubview:redDotView];
-        [redDotView.widthAnchor constraintEqualToConstant:5].active = YES;
-        [redDotView.heightAnchor constraintEqualToConstant:5].active = YES;
-        [redDotView.topAnchor constraintEqualToAnchor:self.titleLabel.topAnchor constant:0].active = YES;
-        [redDotView.leftAnchor constraintEqualToAnchor:self.titleLabel.rightAnchor constant:5].active = YES;
     }
     return self;
 }
@@ -69,6 +64,10 @@
     }
 
     self.titleLabel.font = font;
+    
+    if (self.redDotView) {
+        self.redDotView.frame = CGRectMake(CGRectGetWidth(self.titleLabel.frame) + 5, 0, 5, 5);
+    }
     
     [super layoutSubviews];
 }
